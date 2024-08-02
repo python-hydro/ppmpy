@@ -17,6 +17,8 @@ class PPMInterpolant:
         self.am = grid.scratch_array()
         self.a6 = grid.scratch_array()
 
+        self.initialized = False
+
     def construct_parabola(self):
         # first do the cubic interpolation in zones in all but the last ghost cell
         # we will be getting a_{i+1/2}
@@ -79,6 +81,8 @@ class PPMInterpolant:
 
         self.a6 = 6.0 * self.a - 3.0 * (self.am + self.ap)
 
+        self.initialized = True
+
     def integrate(self, sigma):
         """integrate under the parabola to the left edge (Im) and
         right edge (Ip) for a fraction sigma = lambda * dt / dx,
@@ -87,15 +91,18 @@ class PPMInterpolant:
 
         """
 
+        if not self.initialized:
+            self.construct_parabola()
+
         Ip = self.grid.scratch_array()
         Ip[:] = np.where(sigma <= 0.0, self.ap,
                          self.ap - 0.5 * np.abs(sigma) *
-                           (self.ap - self.am - (1.0 - (2.0/3.0) * np.abs(sigma) * self.a6)))
+                           (self.ap - self.am - (1.0 - (2.0/3.0) * np.abs(sigma)) * self.a6))
 
         Im = self.grid.scratch_array()
         Im[:] = np.where(sigma >= 0.0, self.am,
                          self.am + 0.5 * np.abs(sigma) *
-                           (self.ap - self.am + (1.0 - (2.0/3.0) * np.abs(sigma) * self.a6)))
+                           (self.ap - self.am + (1.0 - (2.0/3.0) * np.abs(sigma)) * self.a6))
 
         return Im, Ip
 
