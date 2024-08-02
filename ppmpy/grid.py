@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class FVGrid:
     """The main finite-volume grid class for holding our fluid state."""
 
-    def __init__(self, nx, ng, xmin=0.0, xmax=1.0, vars=None):
+    def __init__(self, nx, ng, xmin=0.0, xmax=1.0):
 
         self.xmin = xmin
         self.xmax = xmax

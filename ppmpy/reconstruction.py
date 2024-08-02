@@ -1,12 +1,12 @@
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 class PPMInterpolant:
     """Given a fluid variable a defined on the FVGrid grid, perform
     the PPM reconstruction"""
     def __init__(self, grid, a, *, limit=True):
         self.grid = grid
-        assert(grid.ng >= 3)
+        assert grid.ng >= 3
 
         self.a = a
         self.limit = limit
