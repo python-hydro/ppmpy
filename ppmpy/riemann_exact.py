@@ -29,6 +29,7 @@ class State:
     def __str__(self):
         return f"rho: {self.rho}; u: {self.u}; p: {self.p}"
 
+
 class RiemannProblem:
     """ a class to define a Riemann problem.  It takes a left
         and right state.  Note: we assume a constant gamma """
@@ -56,17 +57,17 @@ class RiemannProblem:
         else:
             raise ValueError("invalid side")
 
-        c = np.sqrt(self.gamma*state.p/state.rho)
+        c = np.sqrt(self.gamma * state.p / state.rho)
 
         if p < state.p:
             # rarefaction
-            u = state.u + s*(2.0*c/(self.gamma-1.0))* \
-                (1.0 - (p/state.p)**((self.gamma-1.0)/(2.0*self.gamma)))
+            u = state.u + s * (2.0 * c / (self.gamma - 1.0)) * \
+                (1.0 - (p/state.p)**((self.gamma - 1.0) / (2.0 * self.gamma)))
         else:
             # shock
-            beta = (self.gamma+1.0)/(self.gamma-1.0)
-            u = state.u + s*(2.0*c/np.sqrt(2.0*self.gamma*(self.gamma-1.0)))* \
-                (1.0 - p/state.p)/np.sqrt(1.0 + beta*p/state.p)
+            beta = (self.gamma + 1.0) / (self.gamma - 1.0)
+            u = state.u + s * (2.0 * c / np.sqrt(2.0 * self.gamma * (self.gamma-1.0))) * \
+                (1.0 - p/state.p) / np.sqrt(1.0 + beta * p / state.p)
 
         return u
 
@@ -78,7 +79,6 @@ class RiemannProblem:
             lambda p: self.u_hugoniot(p, "left") - self.u_hugoniot(p, "right"),
             p_min, p_max)
         self.ustar = self.u_hugoniot(self.pstar, "left")
-
 
     def shock_solution(self, sgn, state):
         """return the interface solution considering a shock"""
@@ -108,14 +108,14 @@ class RiemannProblem:
         # find the speed of the head and tail of the rarefaction fan
 
         # isentropic (Toro eq. 4.54 / 4.61)
-        p_ratio = self.pstar/state.p
-        c = np.sqrt(self.gamma*state.p/state.rho)
-        cstar = c*p_ratio**((self.gamma-1.0)/(2*self.gamma))
+        p_ratio = self.pstar / state.p
+        c = np.sqrt(self.gamma * state.p / state.rho)
+        cstar = c*p_ratio**((self.gamma - 1.0) / (2 * self.gamma))
 
         lambda_head = state.u + sgn*c
         lambda_tail = self.ustar + sgn*cstar
 
-        gam_fac = (self.gamma - 1.0)/(self.gamma + 1.0)
+        gam_fac = (self.gamma - 1.0) / (self.gamma + 1.0)
 
         if sgn * lambda_head < 0:
             # R/L region
@@ -123,16 +123,17 @@ class RiemannProblem:
 
         elif sgn * lambda_tail > 0:
             # * region, we use the isentropic density (Toro 4.53 / 4.60)
-            solution = State(rho = state.rho*p_ratio**(1.0/self.gamma),
-                             u = self.ustar, p = self.pstar)
+            solution = State(rho=state.rho*p_ratio**(1.0/self.gamma),
+                             u=self.ustar,
+                             p=self.pstar)
 
         else:
             # we are in the fan -- Toro 4.56 / 4.63
-            rho = state.rho * (2/(self.gamma + 1.0) -
-                               sgn*gam_fac*state.u/c)**(2.0/(self.gamma-1.0))
-            u = 2.0/(self.gamma + 1.0) * ( -sgn*c + 0.5*(self.gamma - 1.0)*state.u)
-            p = state.p * (2/(self.gamma + 1.0) -
-                           sgn*gam_fac*state.u/c)**(2.0*self.gamma/(self.gamma-1.0))
+            rho = state.rho * (2 / (self.gamma + 1.0) -
+                               sgn * gam_fac * state.u / c)**(2.0 / (self.gamma-1.0))
+            u = 2.0 / (self.gamma + 1.0) * (-sgn * c + 0.5 * (self.gamma - 1.0) * state.u)
+            p = state.p * (2 / (self.gamma + 1.0) -
+                           sgn * gam_fac * state.u / c)**(2.0 * self.gamma / (self.gamma - 1.0))
             solution = State(rho=rho, u=u, p=p)
 
         return solution
