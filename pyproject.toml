@@ -1,0 +1,49 @@
+# pyproject.toml
+# development tools
+
+[tool.pylint.MAIN]
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+  "unspecified-encoding",
+  "line-too-long",
+  "wrong-import-order",
+  "too-many-branches",
+  "too-many-lines",
+  "too-many-statements",
+  "too-many-instance-attributes",
+  "too-many-arguments",
+  "too-many-locals",
+  "too-few-public-methods",
+  "invalid-name",
+  "consider-using-f-string",
+  "consider-using-with",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+]
+enable = ["useless-suppression"]
+
+[tool.pylint.CLASSES]
+defining-attr-methods = [
+  "__init__",
+  "__new__",
+  "setUp",
+  "asyncSetUp",
+  "__post_init__",
+  "setup_class", "setup_method",  # for tests
+]
+
+[tool.pylint.FORMAT]
+max-line-length = 132
+
+[tool.pylint.SIMILARITIES]
+min-similarity-lines = 10
+
+[tool.pylint.TYPECHECK]
+generated-members = ["viridis", "bwr"]
+# see https://github.com/PyCQA/pylint/issues/2289 for the generated-members
+
+
+[tool.codespell]
+skip = ".git"
