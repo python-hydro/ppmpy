@@ -41,20 +41,18 @@ class PPMInterpolant:
             dr[ib:ie+1] = self.a[ib+1:ie+2] - self.a[ib:ie+1]
             dl[ib:ie+1] = self.a[ib:ie+1] - self.a[ib-1:ie]
 
-            da0 = np.where(dl * dr > 0,
+            da0 = np.where(dl * dr < 0, 0.0,
                            np.sign(da0) * np.minimum(np.abs(da0),
                                                      2.0 * np.minimum(np.abs(dl),
-                                                                      np.abs(dr))),
-                           0.0)
+                                                                      np.abs(dr))))
 
             dl[:] = dr[:]
             dr[ib:ie+1] = self.a[ib+2:ie+3] - self.a[ib+1:ie+2]
 
-            dap = np.where(dl * dr > 0,
+            dap = np.where(dl * dr < 0, 0.0,
                            np.sign(dap) * np.minimum(np.abs(dap),
                                                      2.0 * np.minimum(np.abs(dl),
-                                                                      np.abs(dr))),
-                           0.0)
+                                                                      np.abs(dr))))
 
         # cubic
         self.aint[ib:ie+1] = 0.5 * (self.a[ib:ie+1] + self.a[ib+1:ie+2]) - \
@@ -72,15 +70,34 @@ class PPMInterpolant:
 
             test = (self.ap - self.a) * (self.a - self.am) < 0
 
-            testm = (self.ap - self.am) * (self.a - 0.5 * (self.am + self.ap)) > \
-                    (self.ap - self.am)**2 / 6
+            da = self.ap - self.am
+            testm = da * (self.a - 0.5 * (self.am + self.ap)) > da**2 / 6
             self.am[:] = np.where(test, self.a, np.where(testm, 3.0*self.a - 2.0*self.ap, self.am))
 
-            testp = -(self.ap - self.am)**2 / 6 > \
-                    (self.ap - self.am) * (self.a - 0.5 * (self.am + self.ap))
+            testp = -da**2 / 6 > da * (self.a - 0.5 * (self.am + self.ap))
             self.ap[:] = np.where(test, self.a, np.where(testp, 3.0*self.a - 2.0*self.am, self.ap))
 
         self.a6 = 6.0 * self.a - 3.0 * (self.am + self.ap)
+
+    def integrate(self, sigma):
+        """integrate under the parabola to the left edge (Im) and
+        right edge (Ip) for a fraction sigma = lambda * dt / dx,
+        where lambda is the characteristic speed.  We only consider
+        the case where the wave is moving toward the interface
+
+        """
+
+        Ip = self.grid.scratch_array()
+        Ip[:] = np.where(sigma <= 0.0, self.ap,
+                         self.ap - 0.5 * np.abs(sigma) *
+                           (self.ap - self.am - (1.0 - (2.0/3.0) * np.abs(sigma) * self.a6)))
+
+        Im = self.grid.scratch_array()
+        Im[:] = np.where(sigma >= 0.0, self.am,
+                         self.am + 0.5 * np.abs(sigma) *
+                           (self.ap - self.am + (1.0 - (2.0/3.0) * np.abs(sigma) * self.a6)))
+
+        return Im, Ip
 
     def draw_parabola(self, ax, *, scale=None):
         if scale is None:
