@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 class FVGrid:
     """The main finite-volume grid class for holding our fluid state."""
 
-    def __init__(self, nx, ng, xmin=0.0, xmax=1.0):
+    def __init__(self, nx, ng, *,
+                 xmin=0.0, xmax=1.0,
+                 bc_type="outflow"):
 
         self.xmin = xmin
         self.xmax = xmax
@@ -21,19 +23,34 @@ class FVGrid:
         self.xr = xmin + (np.arange(nx+2*ng)-ng+1.0)*self.dx
         self.x = xmin + (np.arange(nx+2*ng)-ng+0.5)*self.dx
 
+        self.bc_type = bc_type
+
     def scratch_array(self, nc=1):
         """ return a scratch array dimensioned for our grid """
         return np.squeeze(np.zeros((self.nx+2*self.ng, nc), dtype=np.float64))
 
     def fill_BCs(self, atmp):
         """ fill all ghost cells with zero-gradient boundary conditions """
-        if atmp.ndim == 2:
-            for n in range(atmp.shape[-1]):
-                atmp[0:self.lo, n] = atmp[self.lo, n]
-                atmp[self.hi+1:, n] = atmp[self.hi, n]
+        if self.bc_type == "outflow":
+            if atmp.ndim == 2:
+                for n in range(atmp.shape[-1]):
+                    atmp[0:self.lo, n] = atmp[self.lo, n]
+                    atmp[self.hi+1:, n] = atmp[self.hi, n]
+            else:
+                atmp[0:self.lo] = atmp[self.lo]
+                atmp[self.hi+1:] = atmp[self.hi]
+
+        elif self.bc_type == "periodic":
+            if atmp.ndim == 2:
+                for n in range(atmp.shape[-1]):
+                    atmp[0:self.lo, n] = atmp[self.hi-self.ng+1:self.hi+1, n]
+                    atmp[self.hi+1:, n] = atmp[self.lo:self.lo+self.ng, n]
+            else:
+                atmp[0:self.lo] = atmp[self.hi-self.ng+1:self.hi+1]
+                atmp[self.hi+1:] = atmp[self.lo:self.lo+self.ng]
+
         else:
-            atmp[0:self.lo] = atmp[self.lo]
-            atmp[self.hi+1:] = atmp[self.hi]
+            raise ValueError("invalid boundary condition")
 
     def draw(self):
         fig, ax = plt.subplots()
