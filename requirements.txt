@@ -1,0 +1,4 @@
+# runtime dependencies
+matplotlib
+numpy
+scipy
