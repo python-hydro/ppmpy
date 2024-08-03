@@ -1,14 +1,12 @@
 import numpy as np
 
 
-def eigen(q, v, gamma):
+def eigen(rho, u, p, gamma):
     """Compute the left and right eigenvectors and the eigenvalues for
     the Euler equations.  q is a single zone primitive variable state,
     v is a FluidVars object that identifies the components of q
 
     """
-
-    assert v.nvar == 3
 
     # The Jacobian matrix for the primitive variable formulation of the
     # Euler equations is
@@ -20,10 +18,6 @@ def eigen(q, v, gamma):
     # With the rows corresponding to rho, u, and p
     #
     # The eigenvalues are u - c, u, u + c
-
-    rho = q[v.qrho]
-    u = q[v.qu]
-    p = q[v.qp]
 
     cs = np.sqrt(gamma * p / rho)
 
