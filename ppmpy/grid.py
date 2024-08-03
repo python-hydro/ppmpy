@@ -14,6 +14,8 @@ class FVGrid:
         self.ng = ng
         self.nx = nx
 
+        self.nq = self.nx + 2*self.ng
+
         self.lo = ng
         self.hi = ng+nx-1
 
@@ -27,7 +29,7 @@ class FVGrid:
 
     def scratch_array(self, nc=1):
         """ return a scratch array dimensioned for our grid """
-        return np.squeeze(np.zeros((self.nx+2*self.ng, nc), dtype=np.float64))
+        return np.squeeze(np.zeros((self.nq, nc), dtype=np.float64))
 
     def fill_BCs(self, atmp):
         """ fill all ghost cells with zero-gradient boundary conditions """
