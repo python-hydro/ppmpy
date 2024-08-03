@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def eigen(q, v, gamma):
     """Compute the left and right eigenvectors and the eigenvalues for
     the Euler equations.  q is a single zone primitive variable state,
@@ -8,8 +9,6 @@ def eigen(q, v, gamma):
     """
 
     assert v.nvar == 3
-
-    cs = np.sqrt(gamma * q[v.qp] / q[v.qrho])
 
     # The Jacobian matrix for the primitive variable formulation of the
     # Euler equations is
@@ -26,8 +25,9 @@ def eigen(q, v, gamma):
     u = q[v.qu]
     p = q[v.qp]
 
-    eval = np.array([u - cs, u, u + cs])
+    cs = np.sqrt(gamma * p / rho)
 
+    ev = np.array([u - cs, u, u + cs])
 
     # The left eigenvectors are
     #
@@ -37,7 +37,7 @@ def eigen(q, v, gamma):
     #
 
     lvec = np.array([[0.0, -0.5 * rho / cs, 0.5 / cs**2],  # u - c
-                     [1.0, 0.0, -1.0 / cs**2 ],  # u
+                     [1.0, 0.0, -1.0 / cs**2],  # u
                      [0.0, 0.5 * rho / cs, 0.5 / cs**2]])  # u + c
 
     # The right eigenvectors are
@@ -51,4 +51,4 @@ def eigen(q, v, gamma):
                      [1.0, 0.0, 0.0],  # u
                      [1.0, cs / rho, cs**2]])  # u + c
 
-    return eval, lvec, rvec
+    return ev, lvec, rvec
