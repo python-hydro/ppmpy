@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def flattening_coefficient(grid, p, u):
 
     # see Saltzman 1994 for an implementation
