@@ -56,7 +56,8 @@ class Euler:
         q[:, self.v.qrho] = self.U[:, self.v.urho]
         q[:, self.v.qu] = self.U[:, self.v.umx] / self.U[:, self.v.urho]
 
-        rhoe = self.U[:, self.v.uener] - 0.5 * q[:, self.v.qrho] * q[:, self.v.qu]**2
+        rhoe = self.U[:, self.v.uener] - \
+            0.5 * q[:, self.v.qrho] * q[:, self.v.qu]**2
         q[:, self.v.qp] = rhoe * (self.gamma - 1.0)
 
         return q
@@ -79,7 +80,7 @@ class Euler:
         Im = self.grid.scratch_array(nc=3*self.v.nvar).reshape(self.grid.nq, 3, self.v.nvar)
 
         for iwave, sgn in enumerate([-1, 0, 1]):
-            sigma = q[:, self.v.qu] + sgn * cs
+            sigma = (q[:, self.v.qu] + sgn * cs) * self.dt / self.grid.dx
 
             for ivar in range(self.v.nvar):
                 Im[:, iwave, ivar], Ip[:, iwave, ivar] = q_parabola[ivar].integrate(sigma)
@@ -117,13 +118,14 @@ class Euler:
                 beta_xm[iwave] = lvec[iwave, :] @ (q_ref_m - Im[i, iwave, :])
                 beta_xp[iwave] = lvec[iwave, :] @ (q_ref_p - Ip[i, iwave, :])
 
-            # finally sum up the waves moving toward the interface, accumulating (l . (q_ref - I)) r
+            # finally sum up the waves moving toward the interface,
+            # accumulating (l . (q_ref - I)) r
             q_left[i+1, :] = q_ref_p[:]
             q_right[i, :] = q_ref_m[:]
             for iwave in range(3):
-                if ev[iwave] > 0:
+                if ev[iwave] >= 0:
                     q_left[i+1, :] -= beta_xp[iwave] * rvec[iwave, :]
-                if ev[iwave] < 0:
+                if ev[iwave] <= 0:
                     q_right[i, :] -= beta_xm[iwave] * rvec[iwave, :]
 
             # godunov hack
