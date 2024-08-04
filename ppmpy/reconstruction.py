@@ -4,12 +4,13 @@ import numpy as np
 class PPMInterpolant:
     """Given a fluid variable a defined on the FVGrid grid, perform
     the PPM reconstruction"""
-    def __init__(self, grid, a, *, limit=True):
+    def __init__(self, grid, a, *, limit=True, chi_flat=None):
         self.grid = grid
         assert grid.ng >= 3
 
         self.a = a
         self.limit = limit
+        self.chi_flat = chi_flat
 
         self.aint = grid.scratch_array()
 
@@ -78,6 +79,10 @@ class PPMInterpolant:
 
             testp = -da**2 / 6 > da * (self.a - 0.5 * (self.am + self.ap))
             self.ap[:] = np.where(test, self.a, np.where(testp, 3.0*self.a - 2.0*self.am, self.ap))
+
+        if self.chi_flat is not None:
+            self.am[:] = (1.0 - self.chi_flat[:]) * self.a[:] + self.chi_flat[:] * self.am[:]
+            self.ap[:] = (1.0 - self.chi_flat[:]) * self.a[:] + self.chi_flat[:] * self.ap[:]
 
         self.a6 = 6.0 * self.a - 3.0 * (self.am + self.ap)
 

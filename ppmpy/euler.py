@@ -25,7 +25,7 @@ class FluidVars:
 
 class Euler:
     def __init__(self, nx, C, *,
-                 gamma=1.4, init_cond=None):
+                 gamma=1.4, init_cond=None, use_flattening=True):
 
         self.grid = FVGrid(nx, ng=4, bc_type="outflow")
         self.v = FluidVars()
@@ -40,10 +40,14 @@ class Euler:
         init_cond(self.grid, self.v, self.gamma, self.U)
         self.grid.fill_BCs(self.U)
 
+        self.use_flattening = use_flattening
+
         self.t = 0
         self.dt = np.nan
 
     def estimate_dt(self):
+        """compute the Courant-limited timestep from the current
+        fluid state"""
 
         q = self.cons_to_prim()
         cs = np.sqrt(self.gamma * q[:, self.v.qp] / q[:, self.v.qrho])
@@ -62,6 +66,51 @@ class Euler:
 
         return q
 
+    def flattening(self, q):
+        """compute the flattening coefficient"""
+
+        # see Saltzman 1994 for an implementation
+
+        smallp = 1.e-10
+        z0 = 0.75
+        z1 = 0.85
+        delta = 0.33
+
+        # dp = p_{i+1} - p_{i-1}
+        dp = self.grid.scratch_array()
+        dp[self.grid.lo-2:self.grid.hi+3] = q[self.grid.lo-1:self.grid.hi+4, self.v.qp] - \
+                                            q[self.grid.lo-3:self.grid.hi+2, self.v.qp]
+
+        # dp2 = p_{i+2} - p_{i-2}
+        dp2 = self.grid.scratch_array()
+        dp2[self.grid.lo-2:self.grid.hi+3] = q[self.grid.lo:self.grid.hi+5, self.v.qp] - \
+                                            q[self.grid.lo-4:self.grid.hi+1, self.v.qp]
+
+        z = np.abs(dp) / np.clip(np.abs(dp2), smallp, None)
+
+        chi = np.clip(1.0 - (z - z0) / (z1 - z0), 0.0, 1.0)
+
+        # du = u_{i+1} - u_{i-1}
+        du = self.grid.scratch_array()
+        du[self.grid.lo-2:self.grid.hi+3] = q[self.grid.lo-1:self.grid.hi+4, self.v.qu] - \
+                                            q[self.grid.lo-3:self.grid.hi+2, self.v.qu]
+
+        # construct |dp_i| / min(p_{i+1}, p_{i-1})
+        test = self.grid.scratch_array()
+        test[self.grid.lo-2:self.grid.hi+3] = np.abs(dp[self.grid.lo-2:self.grid.hi+3]) / \
+            np.minimum(q[self.grid.lo-3:self.grid.hi+2, self.v.qp],
+                       q[self.grid.lo-1:self.grid.hi+4, self.v.qp]) > delta
+
+        chi = np.where(np.logical_and(test, du < 0), chi, 1.0)
+
+        # combine chi with the neighbor, following the sign of the pressure jump
+        chi[self.grid.lo-1:self.grid.hi+2] = np.where(dp[self.grid.lo-1:self.grid.hi+2] > 0,
+                                                      np.minimum(chi[self.grid.lo-1:self.grid.hi+2],
+                                                                 chi[self.grid.lo-2:self.grid.hi+1]),
+                                                      np.minimum(chi[self.grid.lo-1:self.grid.hi+2],
+                                                                 chi[self.grid.lo:self.grid.hi+3]))
+        return chi
+
     def interface_states(self):
 
         # convert to primitive variables
@@ -69,11 +118,15 @@ class Euler:
         cs = np.sqrt(self.gamma * q[:, self.v.qp] / q[:, self.v.qrho])
 
         # compute flattening
+        if self.use_flattening:
+            chi = self.flattening(q)
+        else:
+            chi = None
 
         # construct parabola
         q_parabola = []
         for ivar in range(self.v.nvar):
-            q_parabola.append(PPMInterpolant(self.grid, q[:, ivar]))
+            q_parabola.append(PPMInterpolant(self.grid, q[:, ivar], chi_flat=chi))
 
         # integrate over the 3 waves
         Ip = self.grid.scratch_array(nc=3*self.v.nvar).reshape(self.grid.nq, 3, self.v.nvar)
