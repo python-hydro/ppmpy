@@ -1,7 +1,9 @@
 import numpy as np
 
-from ppmpy import eigen, FVGrid, PPMInterpolant, flattening_coefficient, RiemannProblem, State
-
+from ppmpy.eigen import eigen
+from ppmpy.grid import FVGrid
+from ppmpy.reconstruction import PPMInterpolant, flattening_coefficient
+from ppmpy.riemann_exact import RiemannProblem, State
 
 
 class FluidVars:
