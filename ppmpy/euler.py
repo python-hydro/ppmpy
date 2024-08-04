@@ -7,7 +7,7 @@ from ppmpy.riemann_exact import RiemannProblem, State
 
 
 class FluidVars:
-    """A simple container that holds the integer indicies we will use to
+    """A simple container that holds the integer indices we will use to
     refer to the different fluid components"""
     def __init__(self):
         self.nvar = 3
