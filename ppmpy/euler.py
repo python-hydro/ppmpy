@@ -199,4 +199,3 @@ class Euler:
 
             if verbose:
                 print(f"{istep=}, {self.t=}, {self.dt=}")
-
