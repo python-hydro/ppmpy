@@ -1,9 +1,7 @@
 import numpy as np
 
-from eigen import eigen
-from grid import FVGrid
-from reconstruction import PPMInterpolant
-import riemann_exact as re
+from ppmpy import eigen, FVGrid, PPMInterpolant, flattening_coefficient, RiemannProblem, State
+
 
 
 class FluidVars:
@@ -66,51 +64,6 @@ class Euler:
 
         return q
 
-    def flattening(self, q):
-        """compute the flattening coefficient"""
-
-        # see Saltzman 1994 for an implementation
-
-        smallp = 1.e-10
-        z0 = 0.75
-        z1 = 0.85
-        delta = 0.33
-
-        # dp = p_{i+1} - p_{i-1}
-        dp = self.grid.scratch_array()
-        dp[self.grid.lo-2:self.grid.hi+3] = q[self.grid.lo-1:self.grid.hi+4, self.v.qp] - \
-                                            q[self.grid.lo-3:self.grid.hi+2, self.v.qp]
-
-        # dp2 = p_{i+2} - p_{i-2}
-        dp2 = self.grid.scratch_array()
-        dp2[self.grid.lo-2:self.grid.hi+3] = q[self.grid.lo:self.grid.hi+5, self.v.qp] - \
-                                            q[self.grid.lo-4:self.grid.hi+1, self.v.qp]
-
-        z = np.abs(dp) / np.clip(np.abs(dp2), smallp, None)
-
-        chi = np.clip(1.0 - (z - z0) / (z1 - z0), 0.0, 1.0)
-
-        # du = u_{i+1} - u_{i-1}
-        du = self.grid.scratch_array()
-        du[self.grid.lo-2:self.grid.hi+3] = q[self.grid.lo-1:self.grid.hi+4, self.v.qu] - \
-                                            q[self.grid.lo-3:self.grid.hi+2, self.v.qu]
-
-        # construct |dp_i| / min(p_{i+1}, p_{i-1})
-        test = self.grid.scratch_array()
-        test[self.grid.lo-2:self.grid.hi+3] = np.abs(dp[self.grid.lo-2:self.grid.hi+3]) / \
-            np.minimum(q[self.grid.lo-3:self.grid.hi+2, self.v.qp],
-                       q[self.grid.lo-1:self.grid.hi+4, self.v.qp]) > delta
-
-        chi = np.where(np.logical_and(test, du < 0), chi, 1.0)
-
-        # combine chi with the neighbor, following the sign of the pressure jump
-        chi[self.grid.lo-1:self.grid.hi+2] = np.where(dp[self.grid.lo-1:self.grid.hi+2] > 0,
-                                                      np.minimum(chi[self.grid.lo-1:self.grid.hi+2],
-                                                                 chi[self.grid.lo-2:self.grid.hi+1]),
-                                                      np.minimum(chi[self.grid.lo-1:self.grid.hi+2],
-                                                                 chi[self.grid.lo:self.grid.hi+3]))
-        return chi
-
     def interface_states(self):
 
         # convert to primitive variables
@@ -119,7 +72,7 @@ class Euler:
 
         # compute flattening
         if self.use_flattening:
-            chi = self.flattening(q)
+            chi = flattening_coefficient(self.grid, q[:, self.v.qp], q[:, self.v.qu])
         else:
             chi = None
 
@@ -203,13 +156,13 @@ class Euler:
 
         # this is a loop over interfaces
         for i in range(self.grid.lo, self.grid.hi+2):
-            sl = re.State(rho=q_left[i, self.v.qrho],
-                          u=q_left[i, self.v.qu],
-                          p=q_left[i, self.v.qp])
-            sr = re.State(rho=q_right[i, self.v.qrho],
-                          u=q_right[i, self.v.qu],
-                          p=q_right[i, self.v.qp])
-            rp = re.RiemannProblem(sl, sr, gamma=self.gamma)
+            sl = State(rho=q_left[i, self.v.qrho],
+                       u=q_left[i, self.v.qu],
+                       p=q_left[i, self.v.qp])
+            sr = State(rho=q_right[i, self.v.qrho],
+                       u=q_right[i, self.v.qu],
+                       p=q_right[i, self.v.qp])
+            rp = RiemannProblem(sl, sr, gamma=self.gamma)
             rp.find_star_state()
             s_int = rp.sample_solution()
             flux[i, :] = self.cons_flux(s_int)

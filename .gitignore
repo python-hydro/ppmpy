@@ -18,7 +18,7 @@ _build.*
 
 .coverage
 
-pynucastro/_version.py
+ppmpy/_version.py
 
 /docs/build/
 
@@ -41,3 +41,5 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+Untitled*.ipynb

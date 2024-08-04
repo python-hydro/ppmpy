@@ -1,5 +1,46 @@
 import numpy as np
 
+def flattening_coefficient(grid, p, u):
+
+    # see Saltzman 1994 for an implementation
+
+    smallp = 1.e-10
+    z0 = 0.75
+    z1 = 0.85
+    delta = 0.33
+
+    # dp = p_{i+1} - p_{i-1}
+    dp = grid.scratch_array()
+    dp[grid.lo-2:grid.hi+3] = p[grid.lo-1:grid.hi+4] - p[grid.lo-3:grid.hi+2]
+
+    # dp2 = p_{i+2} - p_{i-2}
+    dp2 = grid.scratch_array()
+    dp2[grid.lo-2:grid.hi+3] = p[grid.lo:grid.hi+5] - p[grid.lo-4:grid.hi+1]
+
+    z = np.abs(dp) / np.clip(np.abs(dp2), smallp, None)
+
+    chi = np.clip(1.0 - (z - z0) / (z1 - z0), 0.0, 1.0)
+
+    # du = u_{i+1} - u_{i-1}
+    du = grid.scratch_array()
+    du[grid.lo-2:grid.hi+3] = u[grid.lo-1:grid.hi+4] - u[grid.lo-3:grid.hi+2]
+
+    # construct |dp_i| / min(p_{i+1}, p_{i-1})
+    test = grid.scratch_array()
+    test[grid.lo-2:grid.hi+3] = np.abs(dp[grid.lo-2:grid.hi+3]) / \
+        np.minimum(p[grid.lo-3:grid.hi+2],
+                   p[grid.lo-1:grid.hi+4]) > delta
+
+    chi = np.where(np.logical_and(test, du < 0), chi, 1.0)
+
+    # combine chi with the neighbor, following the sign of the pressure jump
+    chi[grid.lo-1:grid.hi+2] = np.where(dp[grid.lo-1:grid.hi+2] > 0,
+                                        np.minimum(chi[grid.lo-1:grid.hi+2],
+                                                   chi[grid.lo-2:grid.hi+1]),
+                                        np.minimum(chi[grid.lo-1:grid.hi+2],
+                                                   chi[grid.lo:grid.hi+3]))
+    return chi
+
 
 class PPMInterpolant:
     """Given a fluid variable a defined on the FVGrid grid, perform
