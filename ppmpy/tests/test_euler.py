@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.testing import assert_array_equal, assert_array_almost_equal_nulp
 
 from ppmpy.euler import Euler
 
@@ -18,11 +17,11 @@ def sod(g, v, gamma, U):
     idx_r = g.x >= 0.5
 
     U[idx_l, v.urho] = rho_l
-    U[idx_l, v.umx] =  rho_l * u_l
+    U[idx_l, v.umx] = rho_l * u_l
     U[idx_l, v.uener] = p_l/(gamma - 1.0) + 0.5 * rho_l * u_l**2
 
     U[idx_r, v.urho] = rho_r
-    U[idx_r, v.umx] =  rho_r * u_r
+    U[idx_r, v.umx] = rho_r * u_r
     U[idx_r, v.uener] = p_r/(gamma - 1.0) + 0.5 * rho_r * u_r**2
 
 
