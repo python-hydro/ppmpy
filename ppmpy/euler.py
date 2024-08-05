@@ -203,7 +203,7 @@ class Euler:
 
             # fill ghost cells
             for n in range(self.v.nvar):
-                self.grid.ghost_fill(self.U,
+                self.grid.ghost_fill(self.U[:, n],
                                      bc_left_type=self.bc_left_type,
                                      bc_right_type=self.bc_right_type)
 
