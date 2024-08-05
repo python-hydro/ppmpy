@@ -64,6 +64,28 @@ class FVGrid:
         else:
             raise ValueError("invalid boundary condition")
 
+    def norm(self, e):
+        """compute the L2 norm of array e defined on this grid"""
+
+        assert len(e) == self.nq
+        return np.sqrt(self.dx * np.sum(e[self.lo:self.hi+1]**2))
+
+    def coarsen(self, fdata):
+        """coarsen an array fine defined on this grid down to a grid
+        with 1/2 the number of zones (but the same number of ghost
+        cells
+
+        """
+
+        assert self.nx % 2 == 0
+
+        cgrid = FVGrid(self.nx//2, self.ng)
+        cdata = cgrid.scratch_array()
+        cdata[cgrid.lo:cgrid.hi+1] = 0.5 * (fdata[self.lo:self.hi:2] +
+                                            fdata[self.lo+1:self.hi+1:2])
+
+        return cgrid, cdata
+
     def draw(self):
         fig, ax = plt.subplots()
 
