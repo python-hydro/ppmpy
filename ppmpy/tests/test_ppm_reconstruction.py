@@ -45,7 +45,7 @@ class TestPPM:
         g2 = FVGrid(4, ng=4)
         a2 = g2.scratch_array()
         a2[g2.lo:g2.hi+1] = self.ppm.a[self.ppm.grid.lo:self.ppm.grid.hi+1]
-        g2.fill_BCs(a2)
+        g2.ghost_fill(a2)
 
         ppm2 = PPMInterpolant(g2, a2)
         ppm2.construct_parabola()

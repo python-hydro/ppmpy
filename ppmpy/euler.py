@@ -25,20 +25,30 @@ class FluidVars:
 
 class Euler:
     def __init__(self, nx, C, *,
+                 bc_left_type="outflow", bc_right_type="outflow",
                  gamma=1.4, init_cond=None, use_flattening=True):
 
-        self.grid = FVGrid(nx, ng=4, bc_type="outflow")
+        self.grid = FVGrid(nx, ng=4)
         self.v = FluidVars()
 
         self.C = C
         self.gamma = gamma
 
+        self.bc_left_type = bc_left_type
+        self.bc_right_type = bc_right_type
+
         # storage for the current solution
         self.U = self.grid.scratch_array(nc=self.v.nvar)
 
+        # storage for source terms
+        self.cons_src = self.grid.scratch_array(nc=self.v.nvar)
+
         # initialize
         init_cond(self.grid, self.v, self.gamma, self.U)
-        self.grid.fill_BCs(self.U)
+        for n in range(self.v.nvar):
+            self.grid.ghost_fill(self.U[:, n],
+                                 bc_left_type=self.bc_left_type,
+                                 bc_right_type=self.bc_right_type)
 
         self.use_flattening = use_flattening
 
@@ -192,7 +202,10 @@ class Euler:
         while self.t < tmax:
 
             # fill ghost cells
-            self.grid.fill_BCs(self.U)
+            for n in range(self.v.nvar):
+                self.grid.ghost_fill(self.U,
+                                     bc_left_type=self.bc_left_type,
+                                     bc_right_type=self.bc_right_type)
 
             # get the timestep
             self.estimate_dt()

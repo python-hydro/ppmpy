@@ -43,3 +43,27 @@ class TestGrid:
 
         assert self.g.xl[self.g.lo] == -10.0
         assert self.g.xr[self.g.hi] == 10.0
+
+    def test_ghostfill_outflow(self):
+        a = self.g.scratch_array()
+        a[self.g.lo:self.g.hi+1] = np.arange(self.g.nx)
+        self.g.ghost_fill(a)
+
+        assert a[self.g.lo-2] == a[self.g.lo]
+        assert a[self.g.lo-1] == a[self.g.lo]
+
+        assert a[self.g.hi+1] == a[self.g.hi]
+        assert a[self.g.hi+2] == a[self.g.hi]
+
+    def test_ghostfill_periodic(self):
+        a = self.g.scratch_array()
+        a[self.g.lo:self.g.hi+1] = np.arange(self.g.nx)
+        self.g.ghost_fill(a,
+                          bc_left_type="periodic",
+                          bc_right_type="periodic")
+
+        assert a[self.g.lo-2] == a[self.g.hi-1]
+        assert a[self.g.lo-1] == a[self.g.hi]
+
+        assert a[self.g.hi+1] == a[self.g.lo]
+        assert a[self.g.hi+2] == a[self.g.lo+1]
