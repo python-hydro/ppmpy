@@ -41,6 +41,11 @@ class FVGrid:
         elif bc_left_type == "periodic":
             atmp[0:self.lo] = atmp[self.hi-self.ng+1:self.hi+1]
 
+        elif bc_left_type == "reflect":
+            atmp[0:self.lo] = np.flip(atmp[self.lo:self.lo+self.ng])
+
+        elif bc_left_type == "reflect-odd":
+            atmp[0:self.lo] = -np.flip(atmp[self.lo:self.lo+self.ng])
         else:
             raise ValueError("invalid boundary condition")
 
@@ -52,6 +57,10 @@ class FVGrid:
         elif bc_right_type == "periodic":
             atmp[self.hi+1:] = atmp[self.lo:self.lo+self.ng]
 
+        elif bc_right_type == "reflect":
+            atmp[self.hi+1:] = np.flip(atmp[self.hi-self.ng+1:self.hi+1])
+        elif bc_right_type == "reflect-odd":
+            atmp[self.hi+1:] = -np.flip(atmp[self.hi-self.ng+1:self.hi+1])
         else:
             raise ValueError("invalid boundary condition")
 

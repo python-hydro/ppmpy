@@ -34,8 +34,20 @@ class Euler:
         self.C = C
         self.gamma = gamma
 
-        self.bc_left_type = bc_left_type
-        self.bc_right_type = bc_right_type
+        # setup the BCs -- we need the flexibiility to have different
+        # types for each state variable.  In particular, we want
+        # odd reflection for velocity
+
+        assert bc_left_type in ["outflow", "reflect", "periodic"]
+        assert bc_right_type in ["outflow", "reflect", "periodic"]
+
+        self.bcs_left = self.v.nvar * [bc_left_type]
+        if bc_left_type == "reflect":
+            self.bcs_left[self.v.umx] = "reflect-odd"
+
+        self.bcs_right = self.v.nvar * [bc_right_type]
+        if bc_right_type == "reflect":
+            self.bcs_right[self.v.umx] = "reflect-odd"
 
         # storage for the current solution
         self.U = self.grid.scratch_array(nc=self.v.nvar)
@@ -47,8 +59,8 @@ class Euler:
         init_cond(self.grid, self.v, self.gamma, self.U)
         for n in range(self.v.nvar):
             self.grid.ghost_fill(self.U[:, n],
-                                 bc_left_type=self.bc_left_type,
-                                 bc_right_type=self.bc_right_type)
+                                 bc_left_type=self.bcs_left[n],
+                                 bc_right_type=self.bcs_right[n])
 
         self.use_flattening = use_flattening
 
@@ -204,8 +216,8 @@ class Euler:
             # fill ghost cells
             for n in range(self.v.nvar):
                 self.grid.ghost_fill(self.U[:, n],
-                                     bc_left_type=self.bc_left_type,
-                                     bc_right_type=self.bc_right_type)
+                                     bc_left_type=self.bcs_left[n],
+                                     bc_right_type=self.bcs_right[n])
 
             # get the timestep
             self.estimate_dt()

@@ -67,3 +67,21 @@ class TestGrid:
 
         assert a[self.g.hi+1] == a[self.g.lo]
         assert a[self.g.hi+2] == a[self.g.lo+1]
+
+    def test_ghostfill_reflect(self):
+        a = self.g.scratch_array()
+        a[self.g.lo:self.g.hi+1] = np.arange(self.g.nx) + 1
+        self.g.ghost_fill(a,
+                          bc_left_type="reflect",
+                          bc_right_type="reflect")
+
+        assert_array_equal(a, np.array([2., 1., 1., 2., 3., 4., 5., 5., 4.]))
+
+    def test_ghostfill_reflect_odd(self):
+        a = self.g.scratch_array()
+        a[self.g.lo:self.g.hi+1] = np.arange(self.g.nx) + 1
+        self.g.ghost_fill(a,
+                          bc_left_type="reflect-odd",
+                          bc_right_type="reflect-odd")
+
+        assert_array_equal(a, np.array([-2., -1., 1., 2., 3., 4., 5., -5., -4.]))
