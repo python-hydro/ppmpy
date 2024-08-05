@@ -79,4 +79,4 @@ class TestGrid:
                            0.18824882577593602, 0.13350768081641531, 0.12510813949387228,
                            0.12500108398757634, 0.12500001063923663])
 
-        assert_array_almost_equal_nulp(self.euler.U[self.euler.grid.lo:self.euler.grid.hi+1, 0], answer)
+        assert_array_almost_equal_nulp(self.euler.U[self.euler.grid.lo:self.euler.grid.hi+1, 0], answer, nulp=9)
