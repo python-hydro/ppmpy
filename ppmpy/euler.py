@@ -25,6 +25,7 @@ class FluidVars:
 
 class Euler:
     def __init__(self, nx, C, *,
+                 fixed_dt=None,
                  bc_left_type="outflow", bc_right_type="outflow",
                  gamma=1.4, init_cond=None, use_flattening=True):
 
@@ -33,6 +34,7 @@ class Euler:
 
         self.C = C
         self.gamma = gamma
+        self.fixed_dt = fixed_dt
 
         # setup the BCs -- we need the flexibiility to have different
         # types for each state variable.  In particular, we want
@@ -70,6 +72,10 @@ class Euler:
     def estimate_dt(self):
         """compute the Courant-limited timestep from the current
         fluid state"""
+
+        if self.fixed_dt:
+            self.dt = self.fixed_dt
+            return
 
         q = self.cons_to_prim()
         cs = np.sqrt(self.gamma * q[:, self.v.qp] / q[:, self.v.qrho])
@@ -231,4 +237,4 @@ class Euler:
             istep += 1
 
             if verbose:
-                print(f"{istep=}, {self.t=}, {self.dt=}")
+                print(f"step: {istep:4d}, t = {self.t:#8.4g}, dt = {self.dt:#8.4g}")

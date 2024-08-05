@@ -75,9 +75,16 @@ class RiemannProblem:
         """ root find the Hugoniot curve to find ustar, pstar """
 
         # we need to root-find on
-        self.pstar = optimize.brentq(
-            lambda p: self.u_hugoniot(p, "left") - self.u_hugoniot(p, "right"),
-            p_min, p_max)
+        try:
+            self.pstar = optimize.brentq(
+                lambda p: self.u_hugoniot(p, "left") - self.u_hugoniot(p, "right"),
+                p_min, p_max)
+        except ValueError:
+            print("unable to solve for the star region")
+            print(f"left state = {self.left}")
+            print(f"right state = {self.right}")
+            raise
+
         self.ustar = self.u_hugoniot(self.pstar, "left")
 
     def shock_solution(self, sgn, state):
