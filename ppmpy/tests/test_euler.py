@@ -1,28 +1,8 @@
 import numpy as np
+from numpy.testing import assert_array_almost_equal_nulp
 
 from ppmpy.euler import Euler
-
-
-def sod(g, v, gamma, U):
-
-    # setup initial conditions -- this is Sod's problem
-    rho_l = 1.0
-    u_l = 0.0
-    p_l = 1.0
-    rho_r = 0.125
-    u_r = 0.0
-    p_r = 0.1
-
-    idx_l = g.x < 0.5
-    idx_r = g.x >= 0.5
-
-    U[idx_l, v.urho] = rho_l
-    U[idx_l, v.umx] = rho_l * u_l
-    U[idx_l, v.uener] = p_l/(gamma - 1.0) + 0.5 * rho_l * u_l**2
-
-    U[idx_r, v.urho] = rho_r
-    U[idx_r, v.umx] = rho_r * u_r
-    U[idx_r, v.uener] = p_r/(gamma - 1.0) + 0.5 * rho_r * u_r**2
+from ppmpy.initial_conditions import sod
 
 
 class TestGrid:
@@ -45,7 +25,7 @@ class TestGrid:
 
     def test_cons_to_prim(self):
 
-        # we used know the primitive variables for the sod problem, so
+        # we used the primitive variables for the sod problem, so
         # we can check to see if we recover them
 
         q = self.euler.cons_to_prim()
@@ -82,3 +62,21 @@ class TestGrid:
         self.euler.estimate_dt()
 
         assert dt == self.euler.dt
+
+    def test_result(self):
+
+        self.euler.evolve(0.2, verbose=False)
+
+        answer = np.array([0.9999999999884858, 0.9999999996587968, 0.9999999926055335,
+                           0.9999998591088528, 0.9999976235288265, 0.9999639783206077,
+                           0.999498225421092, 0.9934864722315098, 0.9577722709259177,
+                           0.8876458746394962, 0.8022992747762369, 0.7152743208442388,
+                           0.6378990088575718, 0.557368168194832, 0.4989238371211581,
+                           0.44627949643723397, 0.4128638393142262, 0.4239756578324169,
+                           0.4249987123598105, 0.4277550223279699, 0.41807251757339403,
+                           0.3608284261210408, 0.2969979679601523, 0.26795929193227236,
+                           0.2645912393860567, 0.2617028465028553, 0.2469803347669788,
+                           0.18824882577593602, 0.13350768081641531, 0.12510813949387228,
+                           0.12500108398757634, 0.12500001063923663])
+
+        assert_array_almost_equal_nulp(self.euler.U[self.euler.grid.lo:self.euler.grid.hi+1, 0], answer)
