@@ -27,7 +27,8 @@ class Euler:
     def __init__(self, nx, C, *,
                  fixed_dt=None,
                  bc_left_type="outflow", bc_right_type="outflow",
-                 gamma=1.4, init_cond=None, use_flattening=True):
+                 gamma=1.4, init_cond=None,
+                 use_limiting=True, use_flattening=True):
 
         self.grid = FVGrid(nx, ng=4)
         self.v = FluidVars()
@@ -65,6 +66,7 @@ class Euler:
                                  bc_right_type=self.bcs_right[n])
 
         self.use_flattening = use_flattening
+        self.use_limiting = use_limiting
 
         self.t = 0
         self.dt = np.nan
@@ -110,7 +112,8 @@ class Euler:
         # construct parabola
         q_parabola = []
         for ivar in range(self.v.nvar):
-            q_parabola.append(PPMInterpolant(self.grid, q[:, ivar], chi_flat=chi))
+            q_parabola.append(PPMInterpolant(self.grid, q[:, ivar],
+                                             limit=self.use_limiting, chi_flat=chi))
 
         # integrate over the 3 waves
         Ip = self.grid.scratch_array(nc=3*self.v.nvar).reshape(self.grid.nq, 3, self.v.nvar)
