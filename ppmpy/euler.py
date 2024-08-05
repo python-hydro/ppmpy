@@ -68,6 +68,7 @@ class Euler:
 
         self.t = 0
         self.dt = np.nan
+        self.nstep = 0
 
     def estimate_dt(self):
         """compute the Courant-limited timestep from the current
@@ -215,8 +216,6 @@ class Euler:
 
     def evolve(self, tmax, *, verbose=True):
 
-        istep = 0
-
         while self.t < tmax:
 
             # fill ghost cells
@@ -234,7 +233,7 @@ class Euler:
             # advance
             self.advance_step()
             self.t += self.dt
-            istep += 1
+            self.nstep += 1
 
             if verbose:
-                print(f"step: {istep:4d}, t = {self.t:#8.4g}, dt = {self.dt:#8.4g}")
+                print(f"step: {self.nstep:4d}, t = {self.t:#8.4g}, dt = {self.dt:#8.4g}")
