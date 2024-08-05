@@ -39,7 +39,7 @@ class FVGrid:
             atmp[0:self.lo] = atmp[self.lo]
 
         elif bc_left_type == "periodic":
-                atmp[0:self.lo] = atmp[self.hi-self.ng+1:self.hi+1]
+            atmp[0:self.lo] = atmp[self.hi-self.ng+1:self.hi+1]
 
         else:
             raise ValueError("invalid boundary condition")
