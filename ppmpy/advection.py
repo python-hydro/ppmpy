@@ -70,4 +70,3 @@ def sine(g):
     a = g.scratch_array()
     a[:] = 1.0 + 0.5 * np.sin(2.0 * np.pi * g.x)
     return a
-
