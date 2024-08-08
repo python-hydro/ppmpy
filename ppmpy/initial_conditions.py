@@ -37,7 +37,7 @@ def acoustic_pulse(g, v, gamma, U):
 
     r = np.abs(g.x - xcenter)
 
-    rho = np.where(r <= 0.5, rho0 + delta_rho * np.exp(-16.0 * r) * np.cos(np.pi * r)**6, rho0)
+    rho = np.where(r <= 0.5, rho0 + delta_rho * np.exp(-16.0 * r**2) * np.cos(np.pi * r)**6, rho0)
     p = (rho / rho0)**gamma
     u = 0.0
 
