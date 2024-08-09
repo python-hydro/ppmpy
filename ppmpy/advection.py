@@ -7,6 +7,11 @@ from ppmpy import FVGrid, PPMInterpolant
 
 
 def states(grid, a, u, dt):
+    """Compute the left and right interface states via PPM
+    reconstruction and tracing under the profile
+
+    """
+
     a_ppm = PPMInterpolant(grid, a)
     sigma = u * dt / grid.dx
 
@@ -24,6 +29,10 @@ def states(grid, a, u, dt):
 
 
 def advection(nx, u, C, *, num_periods=1, init_cond=None):
+    """Evolve the linear advection equation using nx zones,
+    a velocity u, and a CFL number C.  You need to provide
+    a function to compute the initial conditions, init_cond(g),
+    where g is a FVGrid object"""
 
     g = FVGrid(nx, ng=3)
 
@@ -60,6 +69,8 @@ def advection(nx, u, C, *, num_periods=1, init_cond=None):
 
 
 def tophat(g):
+    """Simple tophat initial conditions"""
+
     a = g.scratch_array()
     a[:] = 0.0
     a[np.logical_and(g.x >= 1./3., g.x <= 2./3.)] = 1.0
@@ -67,6 +78,8 @@ def tophat(g):
 
 
 def sine(g):
+    """A sine wave initial condition (shifted so a > 0 everywhere)"""
+
     a = g.scratch_array()
     a[:] = 1.0 + 0.5 * np.sin(2.0 * np.pi * g.x)
     return a
