@@ -196,7 +196,8 @@ class Euler:
             # loop over waves and compute l . (qref - I) for each wave
             beta_xm = np.zeros(3)
             for iwave in range(3):
-                beta_xm[iwave] = lvec[iwave, :] @ (q_ref_m - Im[i, iwave, :])
+                dq = q_ref_m - Im[i, iwave, :]
+                beta_xm[iwave] = lvec[iwave, :] @ dq
 
             # finally sum up the waves moving toward the interface,
             # accumulating (l . (q_ref - I)) r
@@ -216,7 +217,8 @@ class Euler:
             # loop over waves and compute l . (qref - I) for each wave
             beta_xp = np.zeros(3)
             for iwave in range(3):
-                beta_xp[iwave] = lvec[iwave, :] @ (q_ref_p - Ip[i, iwave, :])
+                dq = q_ref_p - Ip[i, iwave, :]
+                beta_xp[iwave] = lvec[iwave, :] @ dq
 
             # finally sum up the waves moving toward the interface,
             # accumulating (l . (q_ref - I)) r
