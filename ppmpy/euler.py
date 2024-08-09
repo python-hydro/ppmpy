@@ -39,6 +39,7 @@ class Euler:
                  fixed_dt=None,
                  bc_left_type="outflow", bc_right_type="outflow",
                  gamma=1.4, init_cond=None,
+                 params=None,
                  use_limiting=True, use_flattening=True):
 
         self.grid = FVGrid(nx, ng=4)
@@ -47,6 +48,14 @@ class Euler:
         self.C = C
         self.gamma = gamma
         self.fixed_dt = fixed_dt
+
+        # params can be passed into the initial condition and gravity
+        # functions to provude any parameters needed to implement the
+        # custom behavior
+        if params is None:
+            self.params = {}
+        else:
+            self.params = params
 
         # setup the BCs -- we need the flexibiility to have different
         # types for each state variable.  In particular, we want
@@ -70,7 +79,7 @@ class Euler:
         self.cons_src = self.grid.scratch_array(nc=self.v.nvar)
 
         # initialize
-        init_cond(self.grid, self.v, self.gamma, self.U)
+        init_cond(self.grid, self.v, self.gamma, self.U, self.params)
         for n in range(self.v.nvar):
             self.grid.ghost_fill(self.U[:, n],
                                  bc_left_type=self.bcs_left[n],
