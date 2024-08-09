@@ -9,6 +9,7 @@ from ppmpy.riemann_exact import RiemannProblem, State
 class FluidVars:
     """A simple container that holds the integer indices we will use to
     refer to the different fluid components"""
+
     def __init__(self):
         self.nvar = 3
 
@@ -24,6 +25,11 @@ class FluidVars:
 
 
 class Euler:
+    """A 1D compressible Euler solver using the piecewise parabolic method
+    (PPM), following the original Colella & Woodward ideas
+
+    """
+
     def __init__(self, nx, C, *,
                  fixed_dt=None,
                  bc_left_type="outflow", bc_right_type="outflow",

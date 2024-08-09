@@ -63,7 +63,6 @@ disable = [
   "invalid-name",
   "consider-using-f-string",
   "consider-using-with",
-  "missing-class-docstring",
   "missing-module-docstring",
 ]
 enable = ["useless-suppression"]
