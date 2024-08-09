@@ -152,35 +152,45 @@ class Euler:
 
         for i in range(self.grid.lo-1, self.grid.hi+2):
 
-            # build eigensystem
-            ev, lvec, rvec = eigen(q[i, self.v.qrho], q[i, self.v.qu], q[i, self.v.qp], self.gamma)
+            # right state on interface i -- this uses the "m" reconstructuion
 
-            # reference states -- fastest wave moving to the left or right
+            # reference state -- fastest wave moving to the left
             q_ref_m = Im[i, 0, :]
-            q_ref_p = Ip[i, 2, :]
 
-            # trace states
-            beta_xm = np.zeros(3)
-            beta_xp = np.zeros(3)
+            # build eigensystem
+            ev, lvec, rvec = eigen(q_ref_m[self.v.qrho], q_ref_m[self.v.qu], q_ref_m[self.v.qp], self.gamma)
 
             # loop over waves and compute l . (qref - I) for each wave
+            beta_xm = np.zeros(3)
             for iwave in range(3):
                 beta_xm[iwave] = lvec[iwave, :] @ (q_ref_m - Im[i, iwave, :])
+
+            # finally sum up the waves moving toward the interface,
+            # accumulating (l . (q_ref - I)) r
+            q_right[i, :] = q_ref_m[:]
+            for iwave in range(3):
+                if ev[iwave] <= 0:
+                    q_right[i, :] -= beta_xm[iwave] * rvec[iwave, :]
+
+            # left state on interface i+1 -- this uses the "p" reconstructuion
+
+            # reference state -- fastest wave moving to the right
+            q_ref_p = Ip[i, 2, :]
+
+            # build eigensystem
+            ev, lvec, rvec = eigen(q_ref_p[self.v.qrho], q_ref_p[self.v.qu], q_ref_p[self.v.qp], self.gamma)
+
+            # loop over waves and compute l . (qref - I) for each wave
+            beta_xp = np.zeros(3)
+            for iwave in range(3):
                 beta_xp[iwave] = lvec[iwave, :] @ (q_ref_p - Ip[i, iwave, :])
 
             # finally sum up the waves moving toward the interface,
             # accumulating (l . (q_ref - I)) r
             q_left[i+1, :] = q_ref_p[:]
-            q_right[i, :] = q_ref_m[:]
             for iwave in range(3):
                 if ev[iwave] >= 0:
                     q_left[i+1, :] -= beta_xp[iwave] * rvec[iwave, :]
-                if ev[iwave] <= 0:
-                    q_right[i, :] -= beta_xm[iwave] * rvec[iwave, :]
-
-            # godunov hack
-            #q_left[i+1, :] = q[i, :]
-            #q_right[i, :] = q[i, :]
 
         return q_left, q_right
 
