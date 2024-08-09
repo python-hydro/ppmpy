@@ -146,14 +146,27 @@ class Euler:
         Ip = self.grid.scratch_array(nc=3*self.v.nvar).reshape(self.grid.nq, 3, self.v.nvar)
         Im = self.grid.scratch_array(nc=3*self.v.nvar).reshape(self.grid.nq, 3, self.v.nvar)
 
-        # now deal with gravity
-        
-
         for iwave, sgn in enumerate([-1, 0, 1]):
             sigma = (q[:, self.v.qu] + sgn * cs) * self.dt / self.grid.dx
 
             for ivar in range(self.v.nvar):
                 Im[:, iwave, ivar], Ip[:, iwave, ivar] = q_parabola[ivar].integrate(sigma)
+
+        # now deal with gravity
+        if self.grav_func is not None:
+            g = self.grav_func(self.grid, q[:, self.v.qrho], self.params)
+            self.grid.ghost_fill(g,
+                                 bc_left_type=self.bcs_left[self.v.umx],
+                                 bc_right_type=self.bcs_right[self.v.umx])
+
+            g_parabola = PPMInterpolant(self.grid, g, limit=self.use_limiting, chi_flat=chi)
+
+            Ip_g = self.grid.scratch_array(nc=3)
+            Im_g = self.grid.scratch_array(nc=3)
+
+            for iwave, sgn in enumerate([-1, 0, 1]):
+                sigma = (q[:, self.v.qu] + sgn * cs) * self.dt / self.grid.dx
+                Im_g[:, iwave], Ip_g[:, iwave] = g_parabola.integrate(sigma)
 
         # loop over zones -- we will construct the state on
         # the left and right sides of this zone, these are
