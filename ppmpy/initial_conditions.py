@@ -4,7 +4,7 @@
 import numpy as np
 
 
-def sod(g, v, gamma, U):
+def sod(g, v, gamma, U, params):
     """Initial conditions for the classic Sod shock tube problem"""
 
     # setup initial conditions -- this is Sod's problem
@@ -27,7 +27,7 @@ def sod(g, v, gamma, U):
     U[idx_r, v.uener] = p_r/(gamma - 1.0) + 0.5 * rho_r * u_r**2
 
 
-def acoustic_pulse(g, v, gamma, U):
+def acoustic_pulse(g, v, gamma, U, params):
     """The acoustic pulse problem from McCorquodale & Colella 2011"""
 
     xcenter = 0.5 * (g.xmin + g.xmax)

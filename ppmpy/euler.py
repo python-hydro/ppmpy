@@ -82,7 +82,7 @@ class Euler:
         self.cons_src = self.grid.scratch_array(nc=self.v.nvar)
 
         # initialize
-        init_cond(self.grid, self.v, self.gamma, self.U)
+        init_cond(self.grid, self.v, self.gamma, self.U, self.params)
         for n in range(self.v.nvar):
             self.grid.ghost_fill(self.U[:, n],
                                  bc_left_type=self.bcs_left[n],
