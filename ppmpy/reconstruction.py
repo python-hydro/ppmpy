@@ -2,6 +2,9 @@ import numpy as np
 
 
 def flattening_coefficient(grid, p, u):
+    """Compute the flattening coefficient, chi, for a shock.  This works
+    by looking for compression and a steep pressure profile.  chi = 1
+    means no flattening"""
 
     # see Saltzman 1994 for an implementation
 
@@ -46,6 +49,7 @@ def flattening_coefficient(grid, p, u):
 class PPMInterpolant:
     """Given a fluid variable a defined on the FVGrid grid, perform
     the PPM reconstruction"""
+
     def __init__(self, grid, a, *, limit=True, chi_flat=None):
         self.grid = grid
         assert grid.ng >= 3
@@ -63,6 +67,14 @@ class PPMInterpolant:
         self.initialized = False
 
     def construct_parabola(self):
+        """compute the coefficients of a parabolic interpolant for the
+        data in each zone.  This will give am, the parabola value on
+        the left edge of a zone, ap, the parabola value on the right
+        edge of the zone, and a6, a measure of the curvature of the
+        parabola.
+
+        """
+
         # first do the cubic interpolation in zones in all but the last ghost cell
         # we will be getting a_{i+1/2}
 
@@ -133,8 +145,9 @@ class PPMInterpolant:
     def integrate(self, sigma):
         """integrate under the parabola to the left edge (Im) and
         right edge (Ip) for a fraction sigma = lambda * dt / dx,
-        where lambda is the characteristic speed.  We only consider
-        the case where the wave is moving toward the interface
+        where lambda is the characteristic speed.  If sigma is not
+        moving toward the edge, then we us the limit of the parabola
+        in that direction.
 
         """
 
@@ -154,6 +167,8 @@ class PPMInterpolant:
         return Im, Ip
 
     def draw_parabola(self, ax, *, scale=None):
+        """Draw the parabolas in each zone on the axes ax."""
+
         if scale is None:
             scale = np.max(self.a)
 
@@ -164,6 +179,9 @@ class PPMInterpolant:
             ax.plot(x, a/scale, color="C1")
 
     def mark_cubic(self, ax, *, scale=None):
+        """Mark the location of the initial interface states from the
+        cubic interpolant on the axes ax."""
+
         if scale is None:
             scale = np.max(self.a)
             ax.scatter(self.grid.xr[self.grid.lo-2:self.grid.hi+2],
