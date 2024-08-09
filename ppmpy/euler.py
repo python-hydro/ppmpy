@@ -284,8 +284,8 @@ class Euler:
             self.U[:, self.v.umx] += 0.5 * (U_old[:, self.v.urho] * g_old +
                                             self.U[:, self.v.urho] * g_new)
 
-            self.U[:, self.v.uener] += 0.5 * (U_old[:, self.v.umx] +
-                                              self.U[:, self.v.umx]) * self.g_const
+            self.U[:, self.v.uener] += 0.5 * (U_old[:, self.v.umx] * g_old +
+                                              self.U[:, self.v.umx] * g_new)
 
     def evolve(self, tmax, *, verbose=True):
         """The main evolution driver to advance the state to time tmax"""
