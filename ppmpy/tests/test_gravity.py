@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.testing import assert_array_equal
 
 from ppmpy.grid import FVGrid
 from ppmpy.gravity import constant_gravity
