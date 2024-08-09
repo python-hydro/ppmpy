@@ -213,9 +213,6 @@ class Euler:
 
         for i in range(self.grid.lo-1, self.grid.hi+2):
 
-            # build eigensystem
-            ev, lvec, rvec = eigen(q[i, self.v.qrho], q[i, self.v.qu], q[i, self.v.qp], self.gamma)
-
             cs = np.sqrt(self.gamma * q[i, self.v.qp] / q[i, self.v.qrho])
 
             # right state on interface i -- this uses the "m" reconstructuion
@@ -251,7 +248,6 @@ class Euler:
             q_right[i, self.v.qu] = u_ref - (betap - betam) * cs_ref / rho_ref
             q_right[i, self.v.qp] = p_ref - (betam + betap) * cs_ref**2
 
-
             # left state on interface i+1 -- this uses the "p" reconstructuion
 
             rho_ref = Ip[i, 2, self.v.qrho]
@@ -284,7 +280,6 @@ class Euler:
             q_left[i+1, self.v.qrho] = rho_ref - betam - betap - beta0
             q_left[i+1, self.v.qu] = u_ref - (betap - betam) * cs_ref / rho_ref
             q_left[i+1, self.v.qp] = p_ref - (betam + betap) * cs_ref**2
-
 
         return q_left, q_right
 
