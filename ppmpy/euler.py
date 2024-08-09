@@ -38,7 +38,9 @@ class Euler:
     def __init__(self, nx, C, *,
                  fixed_dt=None,
                  bc_left_type="outflow", bc_right_type="outflow",
-                 gamma=1.4, init_cond=None,
+                 gamma=1.4,
+                 init_cond=None, grav_func=None,
+                 params=None,
                  use_limiting=True, use_flattening=True):
 
         self.grid = FVGrid(nx, ng=4)
@@ -47,6 +49,16 @@ class Euler:
         self.C = C
         self.gamma = gamma
         self.fixed_dt = fixed_dt
+
+        self.grav_func = grav_func
+
+        # params can be passed into the initial condition and gravity
+        # functions to provude any parameters needed to implement the
+        # custom behavior
+        if params is None:
+            self.params = {}
+        else:
+            self.params = params
 
         # setup the BCs -- we need the flexibiility to have different
         # types for each state variable.  In particular, we want
@@ -133,6 +145,9 @@ class Euler:
         # integrate over the 3 waves
         Ip = self.grid.scratch_array(nc=3*self.v.nvar).reshape(self.grid.nq, 3, self.v.nvar)
         Im = self.grid.scratch_array(nc=3*self.v.nvar).reshape(self.grid.nq, 3, self.v.nvar)
+
+        # now deal with gravity
+        
 
         for iwave, sgn in enumerate([-1, 0, 1]):
             sigma = (q[:, self.v.qu] + sgn * cs) * self.dt / self.grid.dx
@@ -243,8 +258,21 @@ class Euler:
         # conservative update
         # this is a loop over zones
 
+        U_old = self.U.copy()
+
         for i in range(self.grid.lo, self.grid.hi+1):
             self.U[i, :] += self.dt * (flux[i, :] - flux[i+1, :]) / self.grid.dx
+
+        # time-centered gravitational source terms
+        if self.grav_func:
+            g_old = self.grav_func(self.grid, U_old[:, self.v.urho], self.params)
+            g_new = self.grav_func(self.grid, self.U[:, self.v.urho], self.params)
+
+            self.U[:, self.v.umx] += 0.5 * (U_old[:, self.v.urho] * g_old +
+                                            self.U[:, self.v.urho] * g_new)
+
+            self.U[:, self.v.uener] += 0.5 * (U_old[:, self.v.umx] +
+                                              self.U[:, self.v.umx]) * self.g_const
 
     def evolve(self, tmax, *, verbose=True):
         """The main evolution driver to advance the state to time tmax"""
