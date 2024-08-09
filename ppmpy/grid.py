@@ -1,3 +1,8 @@
+"""
+A 1D finite-volume grid class
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -46,7 +46,7 @@ version_file = "ppmpy/_version.py"
 # development tools
 
 [tool.pylint.MAIN]
-ignore-patterns = "flycheck*"
+ignore-patterns = "flycheck*,_version.py"
 
 [tool.pylint."MESSAGES CONTROL"]
 disable = [
@@ -61,9 +61,6 @@ disable = [
   "too-many-locals",
   "too-few-public-methods",
   "invalid-name",
-  "consider-using-f-string",
-  "consider-using-with",
-  "missing-module-docstring",
 ]
 enable = ["useless-suppression"]
 

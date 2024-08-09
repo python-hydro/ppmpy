@@ -1,3 +1,8 @@
+"""
+Construct the eigenvalues and eigenvectors of the primitive variable
+form of the Euler equations.
+"""
+
 import numpy as np
 
 

@@ -1,3 +1,9 @@
+"""
+Routines for doing the reconstruction of the interface states from
+cell-average data.
+"""
+
+
 import numpy as np
 
 

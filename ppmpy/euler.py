@@ -1,3 +1,8 @@
+"""
+The main Euler solver classes.
+"""
+
+
 import numpy as np
 
 from ppmpy.eigen import eigen

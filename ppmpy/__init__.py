@@ -1,3 +1,9 @@
+"""
+A 1D hydrodynamics code that implements the piecewise parabolic method.
+This is intended to be used for testing and prototyping variations on
+the core PPM algorithm.
+"""
+
 from ._version import version
 
 __version__ = version
