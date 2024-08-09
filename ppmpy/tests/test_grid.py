@@ -39,9 +39,9 @@ class TestGrid:
 
     def test_coords(self):
 
-        assert_array_equal(self.g.x, np.array([-16., -12.,  -8.,  -4.,   0.,   4.,   8.,  12.,  16.]))
-        assert_array_equal(self.g.xl, np.array([-18., -14., -10.,  -6.,  -2.,   2.,   6.,  10.,  14.]))
-        assert_array_equal(self.g.xr, np.array([-14., -10.,  -6.,  -2.,   2.,   6.,  10.,  14., 18.]))
+        assert_array_equal(self.g.x, np.array([-16., -12., -8., -4., 0., 4., 8., 12., 16.]))
+        assert_array_equal(self.g.xl, np.array([-18., -14., -10., -6., -2., 2., 6., 10., 14.]))
+        assert_array_equal(self.g.xr, np.array([-14., -10., -6., -2., 2., 6., 10., 14., 18.]))
 
         assert_array_almost_equal_nulp(self.g.x, 0.5 * (self.g.xl + self.g.xr))
 

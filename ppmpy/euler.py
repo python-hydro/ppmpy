@@ -86,6 +86,8 @@ class Euler:
         self.dt = self.C * self.grid.dx / np.max(np.abs(q[:, self.v.qu]) + cs)
 
     def cons_to_prim(self):
+        """Convert the conserved variable state to primitive variables"""
+
         q = self.grid.scratch_array(nc=self.v.nvar)
 
         q[:, self.v.qrho] = self.U[:, self.v.urho]
@@ -98,6 +100,8 @@ class Euler:
         return q
 
     def interface_states(self):
+        """Reconstruct the primitive variable state to the interfaces
+        using PPM reconstruction and characteristic tracing"""
 
         # convert to primitive variables
         q = self.cons_to_prim()
@@ -175,6 +179,8 @@ class Euler:
         return q_left, q_right
 
     def interface_states_explicit(self):
+        """a temporary second implementation of the characteristic tracing
+        to interfaces that writes out some of the dot products explicitly"""
 
         # convert to primitive variables
         q = self.cons_to_prim()
@@ -285,6 +291,7 @@ class Euler:
 
     def cons_flux(self, state):
         """ given an interface state, return the conservative flux"""
+
         flux = np.zeros((self.v.nvar), dtype=np.float64)
 
         flux[self.v.urho] = state.rho * state.u
@@ -294,6 +301,8 @@ class Euler:
         return flux
 
     def compute_fluxes(self, q_left, q_right):
+        """given the left and right states, solve the Riemann
+        problem to get the interface state and return the fluxes"""
 
         flux = self.grid.scratch_array(nc=self.v.nvar)
 
@@ -313,6 +322,7 @@ class Euler:
         return flux
 
     def advance_step(self):
+        """Advance the conserved state through a single timestep"""
 
         # construct interface states
         q_left, q_right = self.interface_states()
@@ -327,6 +337,7 @@ class Euler:
             self.U[i, :] += self.dt * (flux[i, :] - flux[i+1, :]) / self.grid.dx
 
     def evolve(self, tmax, *, verbose=True):
+        """The main evolution driver to advance the state to time tmax"""
 
         while self.t < tmax:
 

@@ -87,6 +87,9 @@ class FVGrid:
         return cgrid, cdata
 
     def draw(self):
+        """Draw a finite volume representation of the grid and return the
+        figure and axis objects"""
+
         fig, ax = plt.subplots()
 
         nstart = self.lo - self.ng
