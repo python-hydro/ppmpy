@@ -287,11 +287,11 @@ class Euler:
             g_old = self.grav_func(self.grid, U_old[:, self.v.urho], self.params)
             g_new = self.grav_func(self.grid, self.U[:, self.v.urho], self.params)
 
-            self.U[:, self.v.umx] += 0.5 * (U_old[:, self.v.urho] * g_old +
-                                            self.U[:, self.v.urho] * g_new)
+            self.U[:, self.v.umx] += 0.5 * self.dt * (U_old[:, self.v.urho] * g_old +
+                                                      self.U[:, self.v.urho] * g_new)
 
-            self.U[:, self.v.uener] += 0.5 * (U_old[:, self.v.umx] * g_old +
-                                              self.U[:, self.v.umx] * g_new)
+            self.U[:, self.v.uener] += 0.5 * self.dt * (U_old[:, self.v.umx] * g_old +
+                                                        self.U[:, self.v.umx] * g_new)
 
     def evolve(self, tmax, *, verbose=True):
         """The main evolution driver to advance the state to time tmax"""

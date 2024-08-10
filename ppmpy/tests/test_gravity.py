@@ -32,5 +32,5 @@ class TestGravity:
 
         grav = constant_gravity(self.g, rho, params)
 
-        assert grav[self.g.lo].min() == g_const
-        assert grav[self.g.lo].max() == g_const
+        assert grav[self.g.lo:self.g.hi+1].min() == g_const
+        assert grav[self.g.lo:self.g.hi+1].max() == g_const
