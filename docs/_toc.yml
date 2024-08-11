@@ -1,0 +1,13 @@
+format: jb-book
+root: intro
+parts:
+  - caption: Overview
+    chapters:
+    - file: ppm-reconstruction.ipynb
+    - file: advection.ipynb
+    - file: advection-convergence.ipynb
+
+  - caption: PPM Hydrodynamics
+    chapters:
+    - file: euler.ipynb
+    - file: hse.ipynb

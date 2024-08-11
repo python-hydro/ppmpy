@@ -10,3 +10,10 @@ pytest-cov>=2.6.0
 pytest>=3.6
 
 codespell
+
+
+# docs
+sphinx_design
+sphinx-book-theme>=1.0.1
+pydata-sphinx-theme>=0.13.3
+jupyterlab_myst

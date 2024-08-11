@@ -1,0 +1,61 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: "PPMpy"
+author: <a href="https://zingale.github.io">Michael Zingale</a>
+#logo: rt_small.png
+copyright: "2024"
+
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+#execute:
+#  execute_notebooks: force
+
+# Define the name of the latex output file for PDF builds
+latex:
+  latex_documents:
+    targetname: book.tex
+
+# Information about where the book exists on the web
+repository:
+  url: https://github.com/zingale/ppmpy  # Online location of your book
+  path_to_book: docs  # Optional path to your book, relative to the repository root
+  branch: main  # Which branch of the repository should be used when creating links (optional)
+
+# Add GitHub buttons to your book
+# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+html:
+  use_issues_button: true
+  use_repository_button: true
+  extra_footer: |
+    <p>
+    &copy; 2024; CC-BY-NC-SA 4.0
+    <p>
+
+sphinx:
+  config:
+    html_show_copyright: false
+    nbsphinx_timeout: 300
+    nb_execution_timeout: 300
+    linkcheck_ignore: "https://ieeexplore.ieee.org/document/9994215"
+
+launch_buttons:
+   binderhub_url: "https://mybinder.org"
+   colab_url: "https://colab.research.google.com"
+
+
+
+parse:
+  extensions:
+    - myst_parser
+    - sphinx_design
+
+  myst_enable_extensions:
+    # don't forget to list any other extensions you want enabled,
+    # including those that are enabled by default!
+    - amsmath
+    - dollarmath
+    - linkify
+    - colon_fence
+
+
