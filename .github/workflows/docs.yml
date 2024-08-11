@@ -11,16 +11,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
+        cache: "pip"
+
     - name: Install Python dependencies
       run: |
         sudo apt-get install python3-pip graphviz
         pip install -r requirements.txt
         pip install ghp-import
         PATH="${PATH}:${HOME}/.local/bin"
+
+    - name: Install ppmpy
+      run: pip install --editable .
 
     - name: version list
       run: |
