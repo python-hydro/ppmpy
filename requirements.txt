@@ -13,6 +13,7 @@ codespell
 
 
 # docs
+jupyter-book
 sphinx_design
 sphinx-book-theme>=1.0.1
 pydata-sphinx-theme>=0.13.3
