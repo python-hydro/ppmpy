@@ -78,8 +78,8 @@ class Euler:
         # storage for the current solution
         self.U = self.grid.scratch_array(nc=self.v.nvar)
 
-        # storage for source terms
-        self.cons_src = self.grid.scratch_array(nc=self.v.nvar)
+        self.q_parabola = None
+        self.g_parabola = None
 
         # initialize
         init_cond(self.grid, self.v, self.gamma, self.U, self.params)
@@ -122,13 +122,11 @@ class Euler:
 
         return q
 
-    def interface_states(self):
-        """Reconstruct the primitive variable state to the interfaces
-        using PPM reconstruction and characteristic tracing"""
+    def construct_parabola(self):
+        """Create the parabola reconstruction of the primitive variables"""
 
         # convert to primitive variables
         q = self.cons_to_prim()
-        cs = np.sqrt(self.gamma * q[:, self.v.qp] / q[:, self.v.qrho])
 
         # compute flattening
         if self.use_flattening:
@@ -137,10 +135,31 @@ class Euler:
             chi = None
 
         # construct parabola
-        q_parabola = []
+        self.q_parabola = []
         for ivar in range(self.v.nvar):
-            q_parabola.append(PPMInterpolant(self.grid, q[:, ivar],
-                                             limit=self.use_limiting, chi_flat=chi))
+            self.q_parabola.append(PPMInterpolant(self.grid, q[:, ivar],
+                                                  limit=self.use_limiting, chi_flat=chi))
+            self.q_parabola[-1].construct_parabola()
+
+        # now deal with gravity
+        if self.grav_func is not None:
+            g = self.grav_func(self.grid, q[:, self.v.qrho], self.params)
+            self.grid.ghost_fill(g,
+                                 bc_left_type=self.bcs_left[self.v.umx],
+                                 bc_right_type=self.bcs_right[self.v.umx])
+
+            self.g_parabola = PPMInterpolant(self.grid, g,
+                                             limit=self.use_limiting, chi_flat=chi)
+            self.g_parabola.construct_parabola()
+
+    def interface_states(self):
+        """Trace the primitive variables to the interfaces by integrating
+        under the parabola and doing a characteristic projection
+        """
+
+        # convert to primitive variables
+        q = self.cons_to_prim()
+        cs = np.sqrt(self.gamma * q[:, self.v.qp] / q[:, self.v.qrho])
 
         # integrate over the 3 waves
         Ip = self.grid.scratch_array(nc=3*self.v.nvar).reshape(self.grid.nq, 3, self.v.nvar)
@@ -150,23 +169,16 @@ class Euler:
             sigma = (q[:, self.v.qu] + sgn * cs) * self.dt / self.grid.dx
 
             for ivar in range(self.v.nvar):
-                Im[:, iwave, ivar], Ip[:, iwave, ivar] = q_parabola[ivar].integrate(sigma)
+                Im[:, iwave, ivar], Ip[:, iwave, ivar] = self.q_parabola[ivar].integrate(sigma)
 
         # now deal with gravity
         if self.grav_func is not None:
-            g = self.grav_func(self.grid, q[:, self.v.qrho], self.params)
-            self.grid.ghost_fill(g,
-                                 bc_left_type=self.bcs_left[self.v.umx],
-                                 bc_right_type=self.bcs_right[self.v.umx])
-
-            g_parabola = PPMInterpolant(self.grid, g, limit=self.use_limiting, chi_flat=chi)
-
             Ip_g = self.grid.scratch_array(nc=3)
             Im_g = self.grid.scratch_array(nc=3)
 
             for iwave, sgn in enumerate([-1, 0, 1]):
                 sigma = (q[:, self.v.qu] + sgn * cs) * self.dt / self.grid.dx
-                Im_g[:, iwave], Ip_g[:, iwave] = g_parabola.integrate(sigma)
+                Im_g[:, iwave], Ip_g[:, iwave] = self.g_parabola.integrate(sigma)
 
         # loop over zones -- we will construct the state on
         # the left and right sides of this zone, these are
@@ -271,6 +283,7 @@ class Euler:
         """Advance the conserved state through a single timestep"""
 
         # construct interface states
+        self.construct_parabola()
         q_left, q_right = self.interface_states()
 
         # solve Riemann problem and compute fluxes
@@ -327,3 +340,10 @@ class Euler:
             self.grid.ghost_fill(self.U[:, n],
                                  bc_left_type=self.bcs_left[n],
                                  bc_right_type=self.bcs_right[n])
+
+    def draw_prim(self, gp, ivar):
+        """Draw the parabola for a primitive variable (ivar) on a GridPlot object"""
+
+        self.construct_parabola()
+        self.q_parabola[ivar].draw_parabola(gp)
+        self.q_parabola[ivar].mark_cubic(gp)
