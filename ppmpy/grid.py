@@ -16,6 +16,7 @@ class GridPlot:
         self.hi_index = hi_index
 
     def show_fig(self):
+        """return the Figure object"""
         return self.fig
 
 

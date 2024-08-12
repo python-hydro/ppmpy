@@ -197,8 +197,8 @@ class Euler:
             beta_xm = np.zeros(3)
             for iwave in range(3):
                 dq = q_ref_m - Im[i, iwave, :]
-                if self.grav_func is not None:
-                    dq[self.v.qu] -= 0.5 * self.dt * Im_g[i, iwave]
+                #if self.grav_func is not None:
+                #    dq[self.v.qu] -= 0.5 * self.dt * Im_g[i, iwave]
                 beta_xm[iwave] = lvec[iwave, :] @ dq
 
             # finally sum up the waves moving toward the interface,
@@ -220,8 +220,8 @@ class Euler:
             beta_xp = np.zeros(3)
             for iwave in range(3):
                 dq = q_ref_p - Ip[i, iwave, :]
-                if self.grav_func is not None:
-                    dq[self.v.qu] -= 0.5 * self.dt * Ip_g[i, iwave]
+                #if self.grav_func is not None:
+                #    dq[self.v.qu] -= 0.5 * self.dt * Ip_g[i, iwave]
                 beta_xp[iwave] = lvec[iwave, :] @ dq
 
             # finally sum up the waves moving toward the interface,
@@ -262,6 +262,8 @@ class Euler:
             rp.find_star_state()
             s_int = rp.sample_solution()
             flux[i, :] = self.cons_flux(s_int)
+
+        print("lower boundary flux = ", flux[self.grid.lo, :])
 
         return flux
 
