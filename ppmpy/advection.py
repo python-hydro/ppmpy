@@ -65,6 +65,8 @@ def advection(nx, u, C, *, num_periods=1, init_cond=None):
         a[g.lo:g.hi+1] += -dt * u * (a_int[g.lo+1:g.hi+2] - a_int[g.lo:g.hi+1]) / g.dx
         t += dt
 
+    g.ghost_fill(a, bc_left_type="periodic", bc_right_type="periodic")
+
     return g, a
 
 

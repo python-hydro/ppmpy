@@ -317,3 +317,11 @@ class Euler:
 
             if verbose:
                 print(f"step: {self.nstep:4d}, t = {self.t:#8.4g}, dt = {self.dt:#8.4g}")
+
+        # we're done, but make sure that the ghost cells are
+        # consistent with the solution, in case we plot them
+
+        for n in range(self.v.nvar):
+            self.grid.ghost_fill(self.U[:, n],
+                                 bc_left_type=self.bcs_left[n],
+                                 bc_right_type=self.bcs_right[n])
