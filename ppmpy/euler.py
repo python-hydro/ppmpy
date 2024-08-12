@@ -131,11 +131,11 @@ class Euler:
         q = self.cons_to_prim()
 
         # compute flattening
+        chi = None
         if self.use_flattening:
             chi = flattening_coefficient(self.grid, q[:, self.v.qp], q[:, self.v.qu])
-        else:
-            chi = None
 
+        g = None
         if self.grav_func is not None:
             g = self.grav_func(self.grid, q[:, self.v.qrho], self.params)
 

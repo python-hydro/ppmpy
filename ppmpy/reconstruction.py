@@ -205,23 +205,11 @@ class HSEPPMInterpolant(PPMInterpolant):
     """PPM interpolation for pressure that subtracts off HSE"""
 
     def __init__(self, grid, p, rho, g, *, limit=True, chi_flat=None):
-        self.grid = grid
-        assert grid.ng >= 3
 
-        self.a = p
+        super().__init__(grid, p, limit=limit, chi_flat=chi_flat)
+
         self.rho = rho
         self.g = g
-
-        self.limit = limit
-        self.chi_flat = chi_flat
-
-        self.aint = grid.scratch_array()
-
-        self.ap = grid.scratch_array()
-        self.am = grid.scratch_array()
-        self.a6 = grid.scratch_array()
-
-        self.initialized = False
 
     def construct_parabola(self):
         """compute the coefficients of a parabolic interpolant for the
@@ -323,4 +311,3 @@ class HSEPPMInterpolant(PPMInterpolant):
         self.a6 = 6.0 * self.a - 3.0 * (self.am + self.ap)
 
         self.initialized = True
-
