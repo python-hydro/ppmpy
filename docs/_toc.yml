@@ -9,5 +9,7 @@ parts:
 
   - caption: PPM Hydrodynamics
     chapters:
+    - file: euler-eqs.md
+    - file: euler-riemann.ipynb
     - file: euler.ipynb
     - file: hse.ipynb

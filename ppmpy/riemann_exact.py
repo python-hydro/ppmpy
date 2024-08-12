@@ -15,6 +15,7 @@ is returned as a State object:
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy import optimize
 
 
@@ -167,6 +168,57 @@ class RiemannProblem:
             solution = self.rarefaction_solution(sgn, state)
 
         return solution
+
+
+def plot_hugoniot(riemann_problem, p_min = 0.0, p_max=1.5, N=500):
+    """ plot the Hugoniot curves """
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    p = np.linspace(p_min, p_max, num=N)
+    u_left = np.zeros_like(p)
+    u_right = np.zeros_like(p)
+
+    for n in range(N):
+        u_left[n] = riemann_problem.u_hugoniot(p[n], "left")
+
+    # shock for p > p_s; rarefaction otherwise
+    ish = np.where(p > riemann_problem.left.p)
+    ir = np.where(p < riemann_problem.left.p)
+
+    ax.plot(p[ish], u_left[ish], c="C0", ls="-", lw=2)
+    ax.plot(p[ir], u_left[ir], c="C0", ls=":", lw=2)
+    ax.scatter([riemann_problem.left.p], [riemann_problem.left.u],
+               marker="x", c="C0", s=40)
+
+    du = 0.025*(max(np.max(u_left), np.max(u_right)) -
+                min(np.min(u_left), np.min(u_right)))
+
+    ax.text(riemann_problem.left.p, riemann_problem.left.u+du, "left",
+            horizontalalignment="center", color="C0")
+
+
+    for n in range(N):
+        u_right[n] = riemann_problem.u_hugoniot(p[n], "right")
+
+    ish = np.where(p > riemann_problem.right.p)
+    ir = np.where(p < riemann_problem.right.p)
+
+    ax.plot(p[ish], u_right[ish], c="C1", ls="-", lw=2)
+    ax.plot(p[ir], u_right[ir], c="C1", ls=":", lw=2)
+    ax.scatter([riemann_problem.right.p], [riemann_problem.right.u],
+               marker="x", c="C1", s=40)
+
+    ax.text(riemann_problem.right.p, riemann_problem.right.u+du, "right",
+            horizontalalignment="center", color="C1")
+
+    ax.set_xlim(p_min, p_max)
+
+    ax.set_xlabel(r"$p$", fontsize="large")
+    ax.set_ylabel(r"$u$", fontsize="large")
+
+    return fig
 
 
 if __name__ == "__main__":
