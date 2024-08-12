@@ -275,8 +275,6 @@ class Euler:
             s_int = rp.sample_solution()
             flux[i, :] = self.cons_flux(s_int)
 
-        print("lower boundary flux = ", flux[self.grid.lo, :])
-
         return flux
 
     def advance_step(self):
