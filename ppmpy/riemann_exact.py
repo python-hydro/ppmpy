@@ -170,7 +170,7 @@ class RiemannProblem:
         return solution
 
 
-def plot_hugoniot(riemann_problem, p_min = 0.0, p_max=1.5, N=500):
+def plot_hugoniot(riemann_problem, p_min=0.0, p_max=1.5, N=500):
     """ plot the Hugoniot curves """
 
     fig = plt.figure()
@@ -197,7 +197,6 @@ def plot_hugoniot(riemann_problem, p_min = 0.0, p_max=1.5, N=500):
 
     ax.text(riemann_problem.left.p, riemann_problem.left.u+du, "left",
             horizontalalignment="center", color="C0")
-
 
     for n in range(N):
         u_right[n] = riemann_problem.u_hugoniot(p[n], "right")
