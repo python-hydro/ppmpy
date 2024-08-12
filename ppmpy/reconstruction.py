@@ -175,11 +175,11 @@ class PPMInterpolant:
     def draw_parabola(self, gp, *, scale=None):
         """Draw the parabolas in each zone on the axes ax."""
 
-        if scale is None:
-            scale = np.max(self.a)
-
         ilo = max(gp.lo_index, self.grid.lo-1)
         ihi = min(gp.hi_index, self.grid.hi+1)
+
+        if scale is None:
+            scale = np.max(self.a[ilo:ihi+1])
 
         for n in range(ilo, ihi+1):
             x = np.linspace(self.grid.xl[n], self.grid.xr[n], 50)
@@ -191,11 +191,11 @@ class PPMInterpolant:
         """Mark the location of the initial interface states from the
         cubic interpolant on the axes ax."""
 
-        if scale is None:
-            scale = np.max(self.a)
-
         ilo = max(gp.lo_index-1, self.grid.lo-2)
         ihi = min(gp.hi_index, self.grid.hi+1)
+
+        if scale is None:
+            scale = np.max(self.a[ilo:ihi+1])
 
         gp.ax.scatter(self.grid.xr[ilo:ihi+1], self.aint[ilo:ihi+1] / scale,
                       marker="x", zorder=10)

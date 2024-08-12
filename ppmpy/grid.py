@@ -104,7 +104,7 @@ class FVGrid:
 
         return cgrid, cdata
 
-    def draw(self, *, lo_index=None, hi_index=None):
+    def draw(self, *, lo_index=None, hi_index=None, stretch=1):
         """Draw a finite volume representation of the grid and return the
         figure and axis objects"""
 
@@ -135,7 +135,7 @@ class FVGrid:
 
         ax.plot([self.xr[nstop], self.xr[nstop]], [0, 1.0], color="0.25", lw=2)
 
-        fig.set_size_inches((self.nx + 2 * self.ng), 1)
+        fig.set_size_inches((self.nx + 2 * self.ng), stretch)
         ax.axis("off")
 
         return GridPlot(fig=fig, ax=ax, lo_index=nstart, hi_index=nstop)
