@@ -7,6 +7,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+class GridPlot:
+    """a container to hold info about the grid figure"""
+    def __init__(self, *, fig=None, ax=None, lo_index=None, hi_index=None):
+        self.fig = fig
+        self.ax = ax
+        self.lo_index = lo_index
+        self.hi_index = hi_index
+
+    def show_fig(self):
+        return self.fig
+
+
 class FVGrid:
     """The main finite-volume grid class for holding our fluid state."""
 
@@ -91,14 +103,21 @@ class FVGrid:
 
         return cgrid, cdata
 
-    def draw(self):
+    def draw(self, *, lo_index=None, hi_index=None):
         """Draw a finite volume representation of the grid and return the
         figure and axis objects"""
 
         fig, ax = plt.subplots()
 
-        nstart = self.lo - self.ng
-        nstop = self.hi + self.ng
+        if lo_index is None:
+            nstart = self.lo - self.ng
+        else:
+            nstart = lo_index
+
+        if hi_index is None:
+            nstop = self.hi + self.ng
+        else:
+            nstop = hi_index
 
         ax.plot([self.xl[nstart], self.xr[nstop]], [0, 0], color="0.25", lw=2)
 
@@ -117,4 +136,5 @@ class FVGrid:
 
         fig.set_size_inches((self.nx + 2 * self.ng), 1)
         ax.axis("off")
-        return fig, ax
+
+        return GridPlot(fig=fig, ax=ax, lo_index=nstart, hi_index=nstop)

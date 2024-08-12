@@ -172,24 +172,30 @@ class PPMInterpolant:
 
         return Im, Ip
 
-    def draw_parabola(self, ax, *, scale=None):
+    def draw_parabola(self, gp, *, scale=None):
         """Draw the parabolas in each zone on the axes ax."""
 
         if scale is None:
             scale = np.max(self.a)
 
-        for n in range(self.grid.lo-1, self.grid.hi+2):
+        ilo = max(gp.lo_index, self.grid.lo-1)
+        ihi = min(gp.hi_index, self.grid.hi+1)
+
+        for n in range(ilo, ihi+1):
             x = np.linspace(self.grid.xl[n], self.grid.xr[n], 50)
             xi = (x - self.grid.xl[n]) / self.grid.dx
             a = self.am[n] + xi*(self.ap[n] - self.am[n] + self.a6[n] * (1.0-xi))
-            ax.plot(x, a/scale, color="C1")
+            gp.ax.plot(x, a/scale, color="C1")
 
-    def mark_cubic(self, ax, *, scale=None):
+    def mark_cubic(self, gp, *, scale=None):
         """Mark the location of the initial interface states from the
         cubic interpolant on the axes ax."""
 
         if scale is None:
             scale = np.max(self.a)
-            ax.scatter(self.grid.xr[self.grid.lo-2:self.grid.hi+2],
-                       self.aint[self.grid.lo-2:self.grid.hi+2] / scale,
-                       marker="x", zorder=10)
+
+        ilo = max(gp.lo_index-1, self.grid.lo-2)
+        ihi = min(gp.hi_index, self.grid.hi+1)
+
+        gp.ax.scatter(self.grid.xr[ilo:ihi+1], self.aint[ilo:ihi+1] / scale,
+                      marker="x", zorder=10)
