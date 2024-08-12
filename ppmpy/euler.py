@@ -251,6 +251,18 @@ class Euler:
                 if ev[iwave] >= 0:
                     q_left[i+1, :] -= beta_xp[iwave] * rvec[iwave, :]
 
+        # enforce reflection
+        for n in range(self.v.nvar):
+            if self.bcs_left[n] == "reflect":
+                q_left[self.grid.lo, n] = q_right[self.grid.lo, n]
+            elif self.bcs_left[n] == "reflect-odd":
+                q_left[self.grid.lo, n] = -q_right[self.grid.lo, n]
+
+            if self.bcs_right[n] == "reflect":
+                q_right[self.grid.hi+1, n] = q_left[self.grid.hi+1, n]
+            elif self.bcs_right[n] == "reflect-odd":
+                q_right[self.grid.hi+1, n] = -q_left[self.grid.hi+1, n]
+
         return q_left, q_right
 
     def cons_flux(self, state):
