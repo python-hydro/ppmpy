@@ -199,3 +199,115 @@ class PPMInterpolant:
 
         gp.ax.scatter(self.grid.xr[ilo:ihi+1], self.aint[ilo:ihi+1] / scale,
                       marker="x", zorder=10)
+
+
+class HSEPPMInterpolant(PPMInterpolant):
+    """PPM interpolation for pressure that subtracts off HSE"""
+
+    def __init__(self, grid, p, rho, g, *, limit=True, chi_flat=None):
+
+        super().__init__(grid, p, limit=limit, chi_flat=chi_flat)
+
+        self.rho = rho
+        self.g = g
+
+    def construct_parabola(self):
+        """compute the coefficients of a parabolic interpolant for the
+        pressure in each zone by subtracting off HSE.  This will give
+        am, the parabola value on the left edge of a zone, ap, the
+        parabola value on the right edge of the zone, and a6, a
+        measure of the curvature of the parabola.
+
+        """
+
+        # first do the cubic interpolation in zones in all but the last ghost cell
+        # we will be getting a_{i+1/2}
+
+        # for easy indexing
+        im2 = 0
+        im1 = 1
+        i0 = 2
+        ip1 = 3
+        ip2 = 4
+
+        # the state will initially be defined on ib:ie
+        ib = self.grid.lo-2
+        ie = self.grid.hi+1
+
+        for i in range(ib, ie+1):
+
+            p = np.array([self.a[i-2], self.a[i-1], self.a[i], self.a[i+1], self.a[i+2]])
+            rho = np.array([self.rho[i-2], self.rho[i-1], self.rho[i], self.rho[i+1], self.rho[i+2]])
+            src = np.array([self.g[i-2], self.g[i-1], self.g[i], self.g[i+1], self.g[i+2]])
+
+            p_hse = np.zeros(5)
+
+            p_hse[i0] = p[i0]
+            p_hse[ip1] = p_hse[i0] + 0.25*self.grid.dx * (rho[i0] + rho[ip1]) * (src[i0] + src[ip1])
+            p_hse[ip2] = p_hse[ip1] + 0.25*self.grid.dx * (rho[ip1] + rho[ip2]) * (src[ip1] + src[ip2])
+            p_hse[im1] = p_hse[i0] - 0.25*self.grid.dx * (rho[i0] + rho[im1]) * (src[i0] + src[im1])
+            p_hse[im2] = p_hse[im1] - 0.25*self.grid.dx * (rho[im1] + rho[im2]) * (src[im1] + src[im2])
+
+            tp = p - p_hse
+
+            # 1/2 (a_{i+1} - a_{i-1})
+            da0 = 0.5 * (tp[ip1] - tp[im1])
+
+            # 1/2 (a_{i+2} - a_{i})
+            dap = 0.5 * (tp[ip2] - tp[i0])
+
+            if self.limit:
+                # van-Leer slopes
+                dr = tp[ip1] - tp[i0]
+                dl = tp[i0] - tp[im1]
+
+                if dl * dr > 0.0:
+                    da0 = np.sign(da0) * min(np.abs(da0),
+                                             2.0 * min(np.abs(dl), np.abs(dr)))
+                else:
+                    da0 = 0.0
+
+                dl = dr
+                dr = tp[ip2] - tp[ip1]
+
+                if dl * dr > 0.0:
+                    dap = np.sign(dap) * min(np.abs(dap),
+                                             2.0 * min(np.abs(dl), np.abs(dr)))
+                else:
+                    dap = 0.0
+
+            # cubic
+            self.aint[i] = 0.5 * (tp[i0] + tp[ip1]) - (1.0 / 6.0) * (dap - da0)
+
+        # now the parabola coefficients
+        self.ap[:] = self.aint[:]
+        self.am[1:] = self.ap[:-1]
+
+        p_hse = np.zeros_like(self.a)
+
+        if self.limit:
+
+            # now we work on each zone + 1 ghost cell and limit the parabola
+            # coefficients as needed.  At the end, this will be valid on
+            # lo-1:hi+2
+
+            test = (self.ap - p_hse) * (p_hse - self.am) < 0
+
+            da = self.ap - self.am
+            testm = da * (p_hse - 0.5 * (self.am + self.ap)) > da**2 / 6
+            self.am[:] = np.where(test, p_hse, np.where(testm, 3.0*p_hse - 2.0*self.ap, self.am))
+
+            testp = -da**2 / 6 > da * (p_hse - 0.5 * (self.am + self.ap))
+            self.ap[:] = np.where(test, p_hse, np.where(testp, 3.0*p_hse - 2.0*self.am, self.ap))
+
+        if self.chi_flat is not None:
+            self.am[:] = (1.0 - self.chi_flat[:]) * p_hse[:] + self.chi_flat[:] * self.am[:]
+            self.ap[:] = (1.0 - self.chi_flat[:]) * p_hse[:] + self.chi_flat[:] * self.ap[:]
+
+        # finally, add back in the HSE correction
+        self.ap[:] += self.a[:] + 0.5 * self.grid.dx * self.rho[:] * self.g[:]
+        self.am[:] += self.a[:] - 0.5 * self.grid.dx * self.rho[:] * self.g[:]
+
+        self.a6 = 6.0 * self.a - 3.0 * (self.am + self.ap)
+
+        self.initialized = True

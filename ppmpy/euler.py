@@ -7,7 +7,7 @@ import numpy as np
 
 from ppmpy.eigen import eigen
 from ppmpy.grid import FVGrid
-from ppmpy.reconstruction import PPMInterpolant, flattening_coefficient
+from ppmpy.reconstruction import PPMInterpolant, HSEPPMInterpolant, flattening_coefficient
 from ppmpy.riemann_exact import RiemannProblem, State
 
 
@@ -41,6 +41,7 @@ class Euler:
                  gamma=1.4,
                  init_cond=None, grav_func=None,
                  params=None,
+                 use_hse_reconstruction=False,
                  use_limiting=True, use_flattening=True):
 
         self.grid = FVGrid(nx, ng=4)
@@ -88,6 +89,7 @@ class Euler:
                                  bc_left_type=self.bcs_left[n],
                                  bc_right_type=self.bcs_right[n])
 
+        self.use_hse_reconstruction = use_hse_reconstruction
         self.use_flattening = use_flattening
         self.use_limiting = use_limiting
 
@@ -129,21 +131,27 @@ class Euler:
         q = self.cons_to_prim()
 
         # compute flattening
+        chi = None
         if self.use_flattening:
             chi = flattening_coefficient(self.grid, q[:, self.v.qp], q[:, self.v.qu])
-        else:
-            chi = None
+
+        g = None
+        if self.grav_func is not None:
+            g = self.grav_func(self.grid, q[:, self.v.qrho], self.params)
 
         # construct parabola
         self.q_parabola = []
         for ivar in range(self.v.nvar):
-            self.q_parabola.append(PPMInterpolant(self.grid, q[:, ivar],
-                                                  limit=self.use_limiting, chi_flat=chi))
+            if ivar == self.v.qp and self.use_hse_reconstruction:
+                self.q_parabola.append(HSEPPMInterpolant(self.grid, q[:, ivar], q[:, self.v.qrho], g,
+                                                      limit=self.use_limiting, chi_flat=chi))
+            else:
+                self.q_parabola.append(PPMInterpolant(self.grid, q[:, ivar],
+                                                      limit=self.use_limiting, chi_flat=chi))
             self.q_parabola[-1].construct_parabola()
 
         # now deal with gravity
         if self.grav_func is not None:
-            g = self.grav_func(self.grid, q[:, self.v.qrho], self.params)
             self.grid.ghost_fill(g,
                                  bc_left_type=self.bcs_left[self.v.umx],
                                  bc_right_type=self.bcs_right[self.v.umx])
@@ -209,8 +217,8 @@ class Euler:
             beta_xm = np.zeros(3)
             for iwave in range(3):
                 dq = q_ref_m - Im[i, iwave, :]
-                #if self.grav_func is not None:
-                #    dq[self.v.qu] -= 0.5 * self.dt * Im_g[i, iwave]
+                if self.grav_func is not None:
+                    dq[self.v.qu] -= 0.5 * self.dt * Im_g[i, iwave]
                 beta_xm[iwave] = lvec[iwave, :] @ dq
 
             # finally sum up the waves moving toward the interface,
@@ -232,8 +240,8 @@ class Euler:
             beta_xp = np.zeros(3)
             for iwave in range(3):
                 dq = q_ref_p - Ip[i, iwave, :]
-                #if self.grav_func is not None:
-                #    dq[self.v.qu] -= 0.5 * self.dt * Ip_g[i, iwave]
+                if self.grav_func is not None:
+                    dq[self.v.qu] -= 0.5 * self.dt * Ip_g[i, iwave]
                 beta_xp[iwave] = lvec[iwave, :] @ dq
 
             # finally sum up the waves moving toward the interface,
