@@ -13,4 +13,5 @@ parts:
     - file: euler-riemann.ipynb
     - file: euler.ipynb
     - file: convergence.ipynb
+    - file: hse-reconstruction.ipynb
     - file: hse.ipynb
