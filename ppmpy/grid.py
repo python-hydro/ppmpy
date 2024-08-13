@@ -135,7 +135,9 @@ class FVGrid:
 
         ax.plot([self.xr[nstop], self.xr[nstop]], [0, 1.0], color="0.25", lw=2)
 
-        fig.set_size_inches((self.nx + 2 * self.ng), stretch)
+        nzones = nstop - nstart + 1
+
+        fig.set_size_inches((nzones, stretch))
         ax.axis("off")
 
         return GridPlot(fig=fig, ax=ax, lo_index=nstart, hi_index=nstop)

@@ -185,7 +185,7 @@ class PPMInterpolant:
             x = np.linspace(self.grid.xl[n], self.grid.xr[n], 50)
             xi = (x - self.grid.xl[n]) / self.grid.dx
             a = self.am[n] + xi*(self.ap[n] - self.am[n] + self.a6[n] * (1.0-xi))
-            gp.ax.plot(x, a/scale, color="C1")
+            gp.ax.plot(x, a/scale, color="C1", lw=2)
 
     def mark_cubic(self, gp, *, scale=None):
         """Mark the location of the initial interface states from the
