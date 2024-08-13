@@ -364,4 +364,5 @@ class Euler:
 
         self.construct_parabola()
         self.q_parabola[ivar].draw_parabola(gp)
-        self.q_parabola[ivar].mark_cubic(gp)
+        if not isinstance(self.q_parabola[ivar], HSEPPMInterpolant):
+            self.q_parabola[ivar].mark_cubic(gp)
