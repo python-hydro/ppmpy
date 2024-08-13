@@ -33,11 +33,15 @@ html:
     <p>
 
 sphinx:
+  extra_extensions:
+  - 'sphinx.ext.autodoc'
+  - 'sphinx.ext.autosummary'
   config:
     html_show_copyright: false
     nbsphinx_timeout: 300
     nb_execution_timeout: 300
     linkcheck_ignore: "https://ieeexplore.ieee.org/document/9994215"
+    autosummary_generate: True
 
 launch_buttons:
    binderhub_url: "https://mybinder.org"
