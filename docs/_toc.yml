@@ -15,3 +15,7 @@ parts:
     - file: convergence.ipynb
     - file: hse-reconstruction.ipynb
     - file: hse.ipynb
+
+  - caption: API
+    chapters:
+    - file: api.rst
