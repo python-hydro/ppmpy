@@ -44,3 +44,58 @@ def acoustic_pulse(g, v, gamma, U, params):  # pylint: disable=W0613
     U[:, v.urho] = rho
     U[:, v.umx] = rho * u
     U[:, v.uener] = p / (gamma - 1.0) + 0.5 * rho * u**2
+
+
+def hse(grid, v, gamma, U, params):
+    """An isothermal hydrostatic atmosphere.
+    parameters:
+         "base_density" :  the density at the lower boundary
+         "base_pressure" :  the pressure at the lower boundary
+         "g_const" : the gravitational acceleration
+    """
+
+    rho_base = params["base_density"]
+    pres_base = params["base_pressure"]
+    g = params["g_const"]
+
+    verbose = params.get("verbose", False)
+
+    # we will assume we are isothermal and constant composition.  In that case,
+    # p/rho = constant
+    A = pres_base / rho_base
+
+    # we will discretize HSE as second-order
+    # p_{i+1} = p_i + dx / 2 (rho_i + rho_{i+1} g
+    # but we can write p_{i+1} = A rho_{i+1} and solve for rho_{i+1}
+
+    p = grid.scratch_array()
+    rho = grid.scratch_array()
+
+    # we want the base conditions to be at the lower boundary.  We will
+    # set the conditions in the first zone center from the analytic expression:
+    # P = P_base e^{-z/H}
+
+    H = pres_base / rho_base / np.abs(g)
+
+    p[grid.lo] = pres_base * np.exp(-grid.x[grid.lo] / H)
+    rho[grid.lo] = rho_base * np.exp(-grid.x[grid.lo] / H)
+
+    for i in range(grid.lo+1, grid.hi+1):
+        rho[i] = (p[i-1] + 0.5 * grid.dx * rho[i-1] * g) / (A - 0.5 * grid.dx * g)
+        p[i] = A * rho[i]
+
+    # now check HSE
+    if verbose:
+        max_err = 0.0
+        for i in range(grid.lo+1, grid.hi+1):
+            dpdr = (p[i] - p[i-1])/grid.dx
+            rhog = 0.5 * (rho[i] + rho[i-1]) * g
+            err = np.abs(dpdr - rhog) / np.abs(rhog)
+            max_err = max(max_err, err)
+
+        print(f"max err = {max_err}")
+
+    # now fill the conserved variables
+    U[:, v.urho] = rho[:]
+    U[:, v.umx] = 0.0
+    U[:, v.uener] = p[:] / (gamma - 1.0)
