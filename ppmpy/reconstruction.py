@@ -195,7 +195,8 @@ class PPMInterpolant:
         ihi = min(gp.hi_index, self.grid.hi+1)
 
         if scale is None:
-            scale = np.max(self.a[ilo:ihi+1])
+            # we need to scale with the same limits as the centers
+            scale = np.max(self.a[ilo+1:ihi+1])
 
         gp.ax.scatter(self.grid.xr[ilo:ihi+1], self.aint[ilo:ihi+1] / scale,
                       marker="x", zorder=10)
