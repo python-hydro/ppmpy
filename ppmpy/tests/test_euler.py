@@ -1,11 +1,37 @@
 import numpy as np
 from numpy.testing import assert_array_almost_equal_nulp
 
-from ppmpy.euler import Euler
-from ppmpy.initial_conditions import sod
+from ppmpy.euler import Euler, FluidVars
+from ppmpy.initial_conditions import sod, acoustic_pulse
+
+from pytest import approx
 
 
-class TestGrid:
+class TestFluidVars:
+
+    @classmethod
+    def setup_class(cls):
+        """ this is run once for each class before any tests """
+
+    @classmethod
+    def teardown_class(cls):
+        """ this is run once for each class after all tests """
+
+    def setup_method(self):
+        """ this is run before each test """
+
+        self.v = FluidVars()
+
+    def teardown_method(self):
+        """ this is run after each test """
+
+    def test_indices(self):
+        assert self.v.urho == self.v.qrho
+        assert self.v.umx == self.v.qu
+        assert self.v.uener == self.v.qp
+
+
+class TestEuler:
 
     @classmethod
     def setup_class(cls):
@@ -47,7 +73,7 @@ class TestGrid:
         assert q[-1, v.qu] == u_r
         assert q[-1, v.qp] == p_r
 
-    def test_properties(self):
+    def test_estimate_dt(self):
 
         # for sod, there is only a left and right state.  No initial velocity
         # so we can just get the soundspeed
@@ -80,3 +106,57 @@ class TestGrid:
                            0.125001080305388, 0.1250000106083176])
 
         assert_array_almost_equal_nulp(self.euler.U[self.euler.grid.lo:self.euler.grid.hi+1, 0], answer, nulp=9)
+
+
+class TestEulerReconstruction:
+
+    @classmethod
+    def setup_class(cls):
+        """ this is run once for each class before any tests """
+
+    @classmethod
+    def teardown_class(cls):
+        """ this is run once for each class after all tests """
+
+    def setup_method(self):
+        """ this is run before each test """
+
+        self.euler = Euler(16, 0.5, init_cond=acoustic_pulse)
+        self.euler.estimate_dt()
+
+    def teardown_method(self):
+        """ this is run after each test """
+
+    def test_construct_parabola(self):
+
+        self.euler.construct_parabola()
+
+        ans = np.array([0.0000000000000000e+00, 0.0000000000000000e+00,
+                        0.0000000000000000e+00, 0.0000000000000000e+00,
+                        0.0000000000000000e+00, -1.4925725604797435e-05,
+                        -5.5892314022898404e-04, -3.1886159900746947e-03,
+                        -1.1509891420676155e-02, -1.5395301015125540e-02,
+                        -7.3670928260867186e-03, 0.0000000000000000e+00,
+                        0.0000000000000000e+00, -7.3670928260867186e-03,
+                        -1.5395301015125540e-02, -1.1509891420676155e-02,
+                        -3.1886159900746947e-03, -5.5892314022898404e-04,
+                        -1.4925725604797435e-05, 0.0000000000000000e+00,
+                        0.0000000000000000e+00, 0.0000000000000000e+00,
+                        0.0000000000000000e+00, 0.0000000000000000e+00])
+
+        assert_array_almost_equal_nulp(self.euler.q_parabola[0].a6, ans)
+
+        ans2 = np.array([ 0.0000000000000000e+00, 0.0000000000000000e+00,
+                          -8.8817841970012523e-16, 0.0000000000000000e+00,
+                          -8.8817841970012523e-16, -1.4925738349269579e-05,
+                          -5.5894233322995035e-04, -3.1567942491133039e-03,
+                          -1.1552096619801056e-02, -1.5947978794340401e-02,
+                          -8.1712935823112787e-03, 0.0000000000000000e+00,
+                          0.0000000000000000e+00, -8.1712935823112787e-03,
+                          -1.5947978794340401e-02, -1.1552096619801056e-02,
+                          -3.1567942491133039e-03, -5.5894233322995035e-04,
+                          -1.4925738349269579e-05, -8.8817841970012523e-16,
+                          0.0000000000000000e+00, -8.8817841970012523e-16,
+                          0.0000000000000000e+00, 0.0000000000000000e+00])
+
+        assert_array_almost_equal_nulp(self.euler.q_parabola[2].a6, ans2)
