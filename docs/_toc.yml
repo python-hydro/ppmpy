@@ -3,15 +3,18 @@ root: intro
 parts:
   - caption: Overview
     chapters:
-    - file: ppm-reconstruction.ipynb
-    - file: advection.ipynb
-    - file: advection-convergence.ipynb
-
-  - caption: PPM Hydrodynamics
-    chapters:
     - file: euler-eqs.md
     - file: euler-riemann.ipynb
     - file: ppm.md
+    - file: ppm-reconstruction.ipynb
+
+  - caption: Advection
+    chapters:
+    - file: advection.ipynb
+    - file: advection-convergence.ipynb
+
+  - caption: Hydrodynamics
+    chapters:
     - file: euler.ipynb
     - file: convergence.ipynb
     - file: hse-reconstruction.ipynb
