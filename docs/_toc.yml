@@ -18,4 +18,5 @@ parts:
 
   - caption: API
     chapters:
-    - file: api.rst
+    - file: ppmpy.rst
+
