@@ -5,7 +5,25 @@ import numpy as np
 
 
 def sod(g, v, gamma, U, params):  # pylint: disable=W0613
-    """Initial conditions for the classic Sod shock tube problem"""
+    """Initial conditions for the classic Sod shock tube problem
+
+    Parameters
+    ----------
+    grid : FVGrid
+        the grid object
+    v : FluidVars
+        the fluid variables object
+    gamma : float
+        the ratio of specific heats
+    U : ndarray
+        the conserved state array
+    params : dict
+        a dictionary of parameters (not used)
+
+    Returns
+    -------
+    None
+    """
 
     # setup initial conditions -- this is Sod's problem
     rho_l = 1.0
@@ -28,7 +46,25 @@ def sod(g, v, gamma, U, params):  # pylint: disable=W0613
 
 
 def acoustic_pulse(g, v, gamma, U, params):  # pylint: disable=W0613
-    """The acoustic pulse problem from McCorquodale & Colella 2011"""
+    """The acoustic pulse problem from McCorquodale & Colella 2011
+
+    Parameters
+    ----------
+    grid : FVGrid
+        the grid object
+    v : FluidVars
+        the fluid variables object
+    gamma : float
+        the ratio of specific heats
+    U : ndarray
+        the conserved state array
+    params : dict
+        a dictionary of parameters (not used)
+
+    Returns
+    -------
+    None
+    """
 
     xcenter = 0.5 * (g.xmin + g.xmax)
 
@@ -48,10 +84,27 @@ def acoustic_pulse(g, v, gamma, U, params):  # pylint: disable=W0613
 
 def hse(grid, v, gamma, U, params):
     """An isothermal hydrostatic atmosphere.
-    parameters:
-         "base_density" :  the density at the lower boundary
-         "base_pressure" :  the pressure at the lower boundary
-         "g_const" : the gravitational acceleration
+
+    Parameters
+    ----------
+    grid : FVGrid
+        the grid object
+    v : FluidVars
+        the fluid variables object
+    gamma : float
+        the ratio of specific heats
+    U : ndarray
+        the conserved state array
+    params : dict
+        a dictionary of parameters
+
+        *  `base_density` :  the density at the lower boundary
+        * `base_pressure` :  the pressure at the lower boundary
+        * `g_const` : the gravitational acceleration
+
+    Returns
+    -------
+    None
     """
 
     rho_base = params["base_density"]

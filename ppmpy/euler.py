@@ -33,6 +33,44 @@ class Euler:
     """A 1D compressible Euler solver using the piecewise parabolic method
     (PPM), following the original Colella & Woodward ideas
 
+    Parameters
+    ----------
+    nx : int
+        the number of zones
+    C : float
+        the CFL number
+    fixed_dt : float, optional
+        a fixed timestep to use for every step.  In this case we
+        do not estimate the timestep using the CFL criteria.
+    bc_left_type : str
+        boundary condition type at the left edge.  Allowed values
+        are: "reflect", "outflow", "periodic"
+    bc_left_type : str
+        boundary condition type at the right edge.  Allowed values
+        are: "reflect", "outflow", "periodic"
+    gamma : float
+        the ratio of specific heats
+    init_cond : function
+        the function to call to initialize the conserved state.
+        This has the signature `init_cond(grid, v, gamma, U, params)`
+        where `grid` is a `FVGrid`, `v` is a `FluidVars`, and `params`
+        is a `dict` with any optional parameters needed for
+        initialization.
+    grav_func : function
+        the function to call to compute the gravitational acceleration.
+        This has the signature: `g = grav_func(grid, rho, params)`, where
+        `grid` is a FVGrid`, `rho` is the density (array), and `params`
+        is a `dict` of option parameters needed to interpret gravity.
+    params : dict, optional
+        a dictionary of parameters that is passed to the initial condition
+        and gravity functions.
+    use_hse_reconstruction : bool, optional
+        do we subtract off HSE from pressure before doing the parabolic
+        reconstruction?
+    use_limiting : bool, optional
+        do we limit the parabola coefficients?
+    use_flattening : bool, optional
+        do we apply flattening to the shock to smear them out?
     """
 
     def __init__(self, nx, C, *,
@@ -113,7 +151,13 @@ class Euler:
         self.dt = self.C * self.grid.dx / np.max(np.abs(q[:, self.v.qu]) + cs)
 
     def cons_to_prim(self):
-        """Convert the conserved variable state to primitive variables"""
+        """Convert the conserved variable state to primitive variables
+
+        Returns
+        -------
+        q : ndarray
+            the primitive variable array.
+        """
 
         q = self.grid.scratch_array(nc=self.v.nvar)
 
@@ -165,6 +209,13 @@ class Euler:
     def interface_states(self):
         """Trace the primitive variables to the interfaces by integrating
         under the parabola and doing a characteristic projection
+
+        Returns
+        -------
+        q_left : ndarray
+            the left primitive variable state on the interface.
+        q_right : ndarray
+            the right primitive variable state on the interface.
         """
 
         # convert to primitive variables
@@ -293,7 +344,18 @@ class Euler:
         return q_left, q_right
 
     def cons_flux(self, state):
-        """ given an interface state, return the conservative flux"""
+        """ given an interface state, return the conservative flux
+
+        Parameters
+        ----------
+        state : RiemannState
+            the interface state from the Riemann solver.
+
+        Returns
+        -------
+        flux : ndarray
+            the conserved flux through the interface for the input state.
+        """
 
         flux = np.zeros((self.v.nvar), dtype=np.float64)
 
@@ -305,7 +367,20 @@ class Euler:
 
     def compute_fluxes(self, q_left, q_right):
         """given the left and right states, solve the Riemann
-        problem to get the interface state and return the fluxes"""
+        problem to get the interface state and return the fluxes
+
+        Parameters
+        ----------
+        q_left : ndarray
+            the left primitive variable state on the interface.
+        q_right : ndarray
+            the right primitive variable state on the interface.
+
+        Returns
+        -------
+        flux : ndarray
+            the conserved flux through each interface.
+        """
 
         flux = self.grid.scratch_array(nc=self.v.nvar)
 
@@ -354,7 +429,15 @@ class Euler:
                                                         self.U[:, self.v.umx] * g_new)
 
     def evolve(self, tmax, *, verbose=True):
-        """The main evolution driver to advance the state to time tmax"""
+        """The main evolution driver to advance the state to time tmax
+
+        Parameters
+        ----------
+        tmax : float
+            maximum simulation time to evolve to
+        verbose : bool, optional
+            enable / disable verbosity
+        """
 
         while self.t < tmax:
 
@@ -387,7 +470,15 @@ class Euler:
                                  bc_right_type=self.bcs_right[n])
 
     def draw_prim(self, gp, ivar):
-        """Draw the parabola for a primitive variable (ivar) on a GridPlot object"""
+        """Draw the parabola for a primitive variable (ivar) on a GridPlot object
+
+        Parameters
+        ----------
+        gp : GridPlot
+            the grid plot object for the figure
+        ivar : int
+            the index of the primitive variable to plot
+        """
 
         self.construct_parabola()
         self.q_parabola[ivar].draw_parabola(gp)

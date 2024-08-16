@@ -10,9 +10,21 @@ import numpy as np
 def flattening_coefficient(grid, p, u):
     """Compute the flattening coefficient, chi, for a shock.  This works
     by looking for compression and a steep pressure profile.  chi = 1
-    means no flattening"""
+    means no flattening.  This follows Saltzman (1994).
 
-    # see Saltzman 1994 for an implementation
+    Parameters
+    ----------
+    grid : FVGrid
+         the grid object.
+    p : ndarray
+         the pressure defined on the grid.
+    u : ndarray
+         the velocity defined on the grid
+
+    Returns
+    -------
+    ndarray
+    """
 
     smallp = 1.e-10
     z0 = 0.75
@@ -54,7 +66,19 @@ def flattening_coefficient(grid, p, u):
 
 class PPMInterpolant:
     """Given a fluid variable a defined on the FVGrid grid, perform
-    the PPM reconstruction"""
+    the PPM reconstruction
+
+    Parameters
+    ----------
+    grid : FVGrid
+        the grid object.
+    a : ndarray
+        the data for a single component defined on the grid.
+    limit : bool, optional
+        do we use limiting?
+    chi_flat : ndarray, optional
+        the flattening coefficient.
+    """
 
     def __init__(self, grid, a, *, limit=True, chi_flat=None):
         self.grid = grid
@@ -155,6 +179,19 @@ class PPMInterpolant:
         moving toward the edge, then we us the limit of the parabola
         in that direction.
 
+        Parameters
+        ----------
+        sigma : ndarray
+            the dimensionless wavespeed (lambda dt / dx)
+
+        Returns
+        -------
+        Im : ndarray
+            the integral under the parabola from the left edge through a
+            distance sigma.
+        Ip : ndarray
+            the integral under the parabola from the right edge through a
+            distance sigma.
         """
 
         if not self.initialized:
@@ -173,7 +210,16 @@ class PPMInterpolant:
         return Im, Ip
 
     def draw_parabola(self, gp, *, scale=None):
-        """Draw the parabolas in each zone on the axes ax."""
+        """Draw the parabolas in each zone on the axes ax.
+
+        Parameters
+        ----------
+
+        gp : GridPlot
+            the grid plot object
+        scale : float, optional
+            normalization factor (default is maximum data value)
+        """
 
         ilo = max(gp.lo_index, self.grid.lo-1)
         ihi = min(gp.hi_index, self.grid.hi+1)
@@ -189,7 +235,17 @@ class PPMInterpolant:
 
     def mark_cubic(self, gp, *, scale=None):
         """Mark the location of the initial interface states from the
-        cubic interpolant on the axes ax."""
+        cubic interpolant on the axes ax.
+
+        Parameters
+        ----------
+
+        gp : GridPlot
+            the grid plot object
+        scale : float, optional
+            normalization factor (default is maximum data value)
+
+        """
 
         ilo = max(gp.lo_index-1, self.grid.lo-2)
         ihi = min(gp.hi_index, self.grid.hi+1)
@@ -203,7 +259,23 @@ class PPMInterpolant:
 
 
 class HSEPPMInterpolant(PPMInterpolant):
-    """PPM interpolation for pressure that subtracts off HSE"""
+    """PPM interpolation for pressure that subtracts off HSE
+
+    Parameters
+    ----------
+    grid : FVGrid
+        the grid object.
+    p : ndarray
+        the pressure defined on the grid.
+    rho : ndarray
+        the density defined on the grid.
+    g : ndarray
+        the gravitational acceleration defined on the grid
+    limit : bool, optional
+        use limiting?
+    chi_flat : ndarray, optional
+        the flattening coefficient.
+    """
 
     def __init__(self, grid, p, rho, g, *, limit=True, chi_flat=None, leave_as_perturbation=False):
 

@@ -170,20 +170,3 @@ were linear, we'd be done -- each characteristic variable would advect
 at its given wave speed without interacting with one-another.
 
 
-## PPM reconstruction
-
-The PPM interface construction is more involved because there are 3 characteristic waves.
-We integrate under the parabola for the distance each of these waves moves over a timestep
-and then add up the jumps carried by each wave if it is moving toward the interface.
-
-Additionally, we use a reference state, $\tilde{{\bf q}}$, (the integral
-under the fastest wave moving toward the interface) to make the
-characteristic decomposition operate on smaller jumps.  This gives a
-state:
-
-$${\bf q}_{i+1/2,L}^{n+1/2} = \tilde{{\bf q}}_+ -
-   \sum_{\nu;\lambda^{(\nu)}\ge 0} {\bf l}_i^{(\nu)} \cdot \left (
-        \tilde{{\bf q}}_+ - \mathcal{I}_+^{(\nu)}({\bf q}_i)
-       \right ) {\bf r}_i^{(\nu)}$$
-
-and a similar expression for the right state.
