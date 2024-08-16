@@ -33,6 +33,44 @@ class Euler:
     """A 1D compressible Euler solver using the piecewise parabolic method
     (PPM), following the original Colella & Woodward ideas
 
+    Parameters
+    ----------
+    nx : int
+        the number of zones
+    C : float
+        the CFL number
+    fixed_dt : float, optional
+        a fixed timestep to use for every step.  In this case we
+        do not estimate the timestep using the CFL criteria.
+    bc_left_type : str
+        boundary condition type at the left edge.  Allowed values
+        are: "reflect", "outflow", "periodic"
+    bc_left_type : str
+        boundary condition type at the right edge.  Allowed values
+        are: "reflect", "outflow", "periodic"
+    gamma : float
+        the ratio of specific heats
+    init_cond : function
+        the function to call to initialize the conserved state.
+        This has the signature `init_cond(grid, v, gamma, U, params)`
+        where `grid` is a `FVGrid`, `v` is a `FluidVars`, and `params`
+        is a `dict` with any optional parameters needed for
+        initialization.
+    grav_func : function
+        the function to call to compute the gravitational acceleration.
+        This has the signature: `g = grav_func(grid, rho, params)`, where
+        `grid` is a FVGrid`, `rho` is the density (array), and `params`
+        is a `dict` of option parameters needed to interpret gravity.
+    params : dict, optional
+        a dictionary of parameters that is passed to the initial condition
+        and gravity functions.
+    use_hse_reconstruction : bool, optional
+        do we subtract off HSE from pressure before doing the parabolic
+        reconstruction?
+    use_limiting : bool, optional
+        do we limit the parabola coefficients?
+    use_flattening : bool, optional
+        do we apply flattening to the shock to smear them out?
     """
 
     def __init__(self, nx, C, *,

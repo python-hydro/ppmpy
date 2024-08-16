@@ -8,9 +8,29 @@ import numpy as np
 
 def eigen(rho, u, p, gamma):
     """Compute the left and right eigenvectors and the eigenvalues for
-    the Euler equations.  q is a single zone primitive variable state,
-    v is a FluidVars object that identifies the components of q
+    the Euler equations.
 
+    Parameters
+    ----------
+    rho : ndarray
+        density
+    u : ndarray
+        velocity
+    p : ndarray
+        pressure
+    gamma : float
+        ratio of specific heats
+
+    Returns
+    -------
+    ev : ndarray
+        array of eigenvalues
+    lvec : ndarray
+        matrix of left eigenvectors, `lvec(iwave, :)` is
+        the eigenvector for wave iwave
+    rvec : ndarray
+        matrix of right eigenvectors, `rvec(iwave, :)` is
+        the eigenvector for wave iwave
     """
 
     # The Jacobian matrix for the primitive variable formulation of the
