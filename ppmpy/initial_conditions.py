@@ -55,9 +55,10 @@ def hse(grid, v, gamma, U, params):
         gamma (float) : the ratio of specific heats
         U (ndarray)   : the conserved state array
         params (dict) : a dictionary of parameters:
-                        `base_density` :  the density at the lower boundary
-                        `base_pressure` :  the pressure at the lower boundary
-                        `g_const` : the gravitational acceleration
+
+                        * `base_density` :  the density at the lower boundary
+                        * `base_pressure` :  the pressure at the lower boundary
+                        * `g_const` : the gravitational acceleration
 
     Returns:
         None
