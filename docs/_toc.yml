@@ -11,6 +11,7 @@ parts:
     chapters:
     - file: euler-eqs.md
     - file: euler-riemann.ipynb
+    - file: ppm.md
     - file: euler.ipynb
     - file: convergence.ipynb
     - file: hse-reconstruction.ipynb

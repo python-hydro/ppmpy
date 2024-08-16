@@ -41,7 +41,7 @@ sphinx:
     add_module_names: False
     html_show_copyright: False
     nb_execution_timeout: 300
-
+    suppress_warnings: "etoc.toctree"
 launch_buttons:
    binderhub_url: "https://mybinder.org"
    colab_url: "https://colab.research.google.com"
