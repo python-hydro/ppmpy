@@ -2,16 +2,16 @@
 gas.  The left and right states are stored as State objects.  We then
 create a RiemannProblem object with the left and right state:
 
-> rp = RiemannProblem(left_state, right_state)
+`rp = RiemannProblem(left_state, right_state)`
 
 Next we solve for the star state:
 
-> rp.find_star_state()
+`rp.find_star_state()`
 
 Finally, we sample the solution to find the interface state, which
 is returned as a State object:
 
-> q_int = rp.sample_solution()
+`q_int = rp.sample_solution()`
 """
 
 import numpy as np
@@ -20,9 +20,19 @@ from scipy import optimize
 
 
 class State:
-    """ a simple object to hold a primitive variable state """
+    """ a simple object to hold a primitive variable state
 
-    def __init__(self, p=1.0, u=0.0, rho=1.0):
+    Parameters
+    ----------
+    p : float
+        pressure
+    u : float
+        velocity
+    rho : float
+        density
+    """
+
+    def __init__(self, *, p=1.0, u=0.0, rho=1.0):
         self.p = p
         self.u = u
         self.rho = rho
@@ -33,9 +43,19 @@ class State:
 
 class RiemannProblem:
     """ a class to define a Riemann problem.  It takes a left
-        and right state.  Note: we assume a constant gamma """
+        and right state.  Note: we assume a constant gamma.
 
-    def __init__(self, left_state, right_state, gamma=1.4):
+    Parameters
+    ----------
+    left_state : State
+        primitive variable state to the left of the interface.
+    right_state : State
+        primitive variable state to the right of the interface.
+    gamma : float
+        ratio of specific heats.
+    """
+
+    def __init__(self, left_state, right_state, *, gamma=1.4):
         self.left = left_state
         self.right = right_state
         self.gamma = gamma
@@ -47,7 +67,20 @@ class RiemannProblem:
         return f"pstar = {self.pstar}, ustar = {self.ustar}"
 
     def u_hugoniot(self, p, side):
-        """define the Hugoniot curve, u(p)."""
+        """define the Hugoniot curve, u(p).
+
+        Parameters
+        ----------
+        p : float
+            pressure
+        side : str
+            "left" or "right" to indicate which state to use.
+
+        Returns
+        -------
+        float
+            the velocity on the Hugoniot curve for the input pressure
+        """
 
         if side == "left":
             state = self.left
@@ -73,7 +106,15 @@ class RiemannProblem:
         return u
 
     def find_star_state(self, p_min=0.001, p_max=1000.0):
-        """ root find the Hugoniot curve to find ustar, pstar """
+        """ root find the Hugoniot curve to find ustar, pstar.
+
+        Parameters
+        ----------
+        p_min : float, optional
+            minimum possible pressure.
+        p_max : float, optional
+            maximum possible pressure.
+        """
 
         # we need to root-find on
         try:
@@ -89,7 +130,21 @@ class RiemannProblem:
         self.ustar = self.u_hugoniot(self.pstar, "left")
 
     def shock_solution(self, sgn, state):
-        """return the interface solution considering a shock"""
+        """return the interface solution considering a shock.
+
+        Parameters
+        ----------
+        sgn : float
+            a sign, -1 or +1, indicating whether it is "+" or "-" in the
+            shock expression (this depends on left or right jump).
+        state : State
+            the Riemann state on the non-star side of the shock.
+
+        Returns
+        -------
+        State
+            the star state across the shock.
+        """
 
         p_ratio = self.pstar/state.p
         c = np.sqrt(self.gamma*state.p/state.rho)
@@ -111,7 +166,21 @@ class RiemannProblem:
         return solution
 
     def rarefaction_solution(self, sgn, state):
-        """return the interface solution considering a rarefaction wave"""
+        """return the interface solution considering a rarefaction wave.
+
+        Parameters
+        ----------
+        sgn : float
+            a sign, -1 or +1, indicating whether it is "+" or "-" in the
+            rarefaction expression (this depends on left or right jump).
+        state : State
+            the Riemann state on the non-star side of the rarefaction.
+
+        Returns
+        -------
+        State
+            the star state across the rarefaction.
+        """
 
         # find the speed of the head and tail of the rarefaction fan
 
@@ -171,7 +240,23 @@ class RiemannProblem:
 
 
 def plot_hugoniot(riemann_problem, p_min=0.0, p_max=1.5, N=500):
-    """ plot the Hugoniot curves """
+    """ plot the Hugoniot curves.
+
+    Parameters
+    ----------
+    riemann_problem : RiemannProblem
+        the Riemann problem object.
+    p_min : float
+        the minimum pressure to plot.
+    p_max : float
+        the maximum pressure to plot.
+    N : int
+        number of points to use in the plot.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
