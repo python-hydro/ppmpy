@@ -149,7 +149,13 @@ class Euler:
         self.dt = self.C * self.grid.dx / np.max(np.abs(q[:, self.v.qu]) + cs)
 
     def cons_to_prim(self):
-        """Convert the conserved variable state to primitive variables"""
+        """Convert the conserved variable state to primitive variables
+
+        Returns
+        -------
+        q : ndarray
+            the primitive variable array.
+        """
 
         q = self.grid.scratch_array(nc=self.v.nvar)
 
@@ -201,6 +207,13 @@ class Euler:
     def interface_states(self):
         """Trace the primitive variables to the interfaces by integrating
         under the parabola and doing a characteristic projection
+
+        Returns
+        -------
+        q_left : ndarray
+            the left primitive variable state on the interface.
+        q_right : ndarray
+            the right primitive variable state on the interface.
         """
 
         # convert to primitive variables
@@ -304,7 +317,18 @@ class Euler:
         return q_left, q_right
 
     def cons_flux(self, state):
-        """ given an interface state, return the conservative flux"""
+        """ given an interface state, return the conservative flux
+
+        Parameters
+        ----------
+        state : RiemannState
+            the interface state from the Riemann solver.
+
+        Returns
+        -------
+        flux : ndarray
+            the conserved flux through the interface for the input state.
+        """
 
         flux = np.zeros((self.v.nvar), dtype=np.float64)
 
@@ -316,7 +340,20 @@ class Euler:
 
     def compute_fluxes(self, q_left, q_right):
         """given the left and right states, solve the Riemann
-        problem to get the interface state and return the fluxes"""
+        problem to get the interface state and return the fluxes
+
+        Parameters
+        ----------
+        q_left : ndarray
+            the left primitive variable state on the interface.
+        q_right : ndarray
+            the right primitive variable state on the interface.
+
+        Returns
+        -------
+        flux : ndarray
+            the conserved flux through each interface.
+        """
 
         flux = self.grid.scratch_array(nc=self.v.nvar)
 
@@ -365,7 +402,15 @@ class Euler:
                                                         self.U[:, self.v.umx] * g_new)
 
     def evolve(self, tmax, *, verbose=True):
-        """The main evolution driver to advance the state to time tmax"""
+        """The main evolution driver to advance the state to time tmax
+
+        Parameters
+        ----------
+        tmax : float
+            maximum simulation time to evolve to
+        verbose : bool, optional
+            enable / disable verbosity
+        """
 
         while self.t < tmax:
 
@@ -398,7 +443,15 @@ class Euler:
                                  bc_right_type=self.bcs_right[n])
 
     def draw_prim(self, gp, ivar):
-        """Draw the parabola for a primitive variable (ivar) on a GridPlot object"""
+        """Draw the parabola for a primitive variable (ivar) on a GridPlot object
+
+        Parameters
+        ----------
+        gp : GridPlot
+            the grid plot object for the figure
+        ivar : int
+            the index of the primitive variable to plot
+        """
 
         self.construct_parabola()
         self.q_parabola[ivar].draw_parabola(gp)
