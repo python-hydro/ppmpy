@@ -49,9 +49,10 @@ def acoustic_pulse(g, v, gamma, U, params):  # pylint: disable=W0613
 def hse(grid, v, gamma, U, params):
     """An isothermal hydrostatic atmosphere.
     parameters:
-         "base_density" :  the density at the lower boundary
-         "base_pressure" :  the pressure at the lower boundary
-         "g_const" : the gravitational acceleration
+
+    `base_density` :  the density at the lower boundary
+    `base_pressure` :  the pressure at the lower boundary
+    `g_const` : the gravitational acceleration
     """
 
     rho_base = params["base_density"]
