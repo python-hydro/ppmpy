@@ -25,8 +25,8 @@ repository:
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
-  use_issues_button: true
-  use_repository_button: true
+  use_issues_button: True
+  use_repository_button: True
   extra_footer: |
     <p>
     &copy; 2024; CC-BY-NC-SA 4.0
@@ -35,13 +35,12 @@ html:
 sphinx:
   extra_extensions:
   - 'sphinx.ext.autodoc'
-  - 'sphinx.ext.autosummary'
+  - 'sphinx.ext.napoleon'
+  - 'sphinx.ext.viewcode'
   config:
-    html_show_copyright: false
-    nbsphinx_timeout: 300
+    add_module_names: False
+    html_show_copyright: False
     nb_execution_timeout: 300
-    linkcheck_ignore: "https://ieeexplore.ieee.org/document/9994215"
-    autosummary_generate: True
 
 launch_buttons:
    binderhub_url: "https://mybinder.org"
