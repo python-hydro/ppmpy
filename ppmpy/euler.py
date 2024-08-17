@@ -3,6 +3,7 @@ The main Euler solver classes.
 """
 
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 from ppmpy.eigen import eigen
@@ -27,6 +28,11 @@ class FluidVars:
         self.qrho = 0
         self.qu = 1
         self.qp = 2
+
+        self.prim_names = [""] * self.nvar
+        self.prim_names[self.qrho] = "rho"
+        self.prim_names[self.qu] = "u"
+        self.prim_names[self.qp] = "p"
 
 
 class Euler:
@@ -457,3 +463,45 @@ class Euler:
         self.q_parabola[ivar].draw_parabola(gp)
         if not isinstance(self.q_parabola[ivar], HSEPPMInterpolant):
             self.q_parabola[ivar].mark_cubic(gp)
+
+    def plot_prim(self, *, ivar=None):
+        """Plot the primitive variable(s) for the current solution.
+
+        Parameters
+        ----------
+        ivar : int
+            the index of the variable to plot (None plots rho, u, p)
+
+        Returns
+        -------
+        matplotlib.pyplot.Figure
+        """
+
+        assert ivar is None or (0 <= ivar < self.v.nvar)
+
+        q = self.cons_to_prim()
+
+        if ivar is not None:
+            fig = plt.figure()
+            ax = fig.add_subplot()
+            ax.plot(self.grid.x[self.grid.lo:self.grid.hi+1],
+                    q[self.grid.lo:self.grid.hi+1, ivar])
+            ax.grid(color="0.5", linestyle=":")
+            ax.set_xlabel("x")
+            ax.set_ylabel(self.v.prim_names[ivar])
+
+        else:
+            fig, ax = plt.subplots(self.v.nvar, 1, sharex=True)
+            for idx in range(self.v.nvar):
+                ax[idx].plot(self.grid.x[self.grid.lo:self.grid.hi+1],
+                        q[self.grid.lo:self.grid.hi+1, idx])
+                ax[idx].grid(color="0.5", linestyle=":")
+                if idx == self.v.nvar-1:
+                    ax[idx].set_xlabel("x")
+                ax[idx].set_ylabel(self.v.prim_names[idx])
+
+            size = fig.get_size_inches()
+            fig.set_size_inches(size[0], size[0]*self.v.nvar/2.5)
+
+        fig.tight_layout()
+        return fig
