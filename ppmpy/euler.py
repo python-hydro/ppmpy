@@ -468,6 +468,44 @@ class Euler:
         if not isinstance(self.q_parabola[ivar], HSEPPMInterpolant):
             self.q_parabola[ivar].mark_cubic(gp)
 
+    def draw_waves(self, gp):
+        """Draw the domains seen by each of the 3 characteristic waves
+        and the interface they interact with
+
+        Parameters
+        ----------
+        gp : GridPlot
+            the grid plot object for the figure
+        """
+
+        ilo = max(gp.lo_index, self.grid.lo-1)
+        ihi = min(gp.hi_index, self.grid.hi+1)
+
+        q = self.cons_to_prim()
+        cs = np.sqrt(self.gamma * q[:, self.v.qp] / q[:, self.v.qrho])
+
+        for n in range(ilo, ihi+1):
+            u = q[n, self.v.qu]
+            evals = np.array([u - cs[n], u, u + cs[n]])
+            colors = ["C4", "C9", "C8"]
+            for iwave, ev in enumerate(evals):
+                if ev > 0:
+                    # reaches the right side of the zone
+                    gp.ax.fill([self.grid.xr[n] - ev * self.dt,
+                                self.grid.xr[n],
+                                self.grid.xr[n],
+                                self.grid.xr[n] - ev * self.dt],
+                                [0.0, 1.0, 0.0, 0.0],
+                               color=colors[iwave], alpha=0.33)
+                elif ev < 0:
+                    # reaches the left side of the zone
+                    gp.ax.fill([self.grid.xl[n],
+                                self.grid.xl[n] + np.abs(ev) * self.dt,
+                                self.grid.xl[n],
+                                self.grid.xl[n]],
+                                [1.0, 0.0, 0.0, 1.0],
+                               color=colors[iwave], alpha=0.25)
+
     def plot_prim(self, *, ivar=None):
         """Plot the primitive variable(s) for the current solution.
 
@@ -489,7 +527,7 @@ class Euler:
             fig = plt.figure()
             ax = fig.add_subplot()
             ax.plot(self.grid.x[self.grid.lo:self.grid.hi+1],
-                    q[self.grid.lo:self.grid.hi+1, ivar])
+                    q[self.grid.lo:self.grid.hi+1, ivar], lw=2)
             ax.grid(color="0.5", linestyle=":")
             ax.set_xlabel("x")
             ax.set_ylabel(self.v.prim_names[ivar])
@@ -498,7 +536,7 @@ class Euler:
             fig, ax = plt.subplots(self.v.nvar, 1, sharex=True)
             for idx in range(self.v.nvar):
                 ax[idx].plot(self.grid.x[self.grid.lo:self.grid.hi+1],
-                        q[self.grid.lo:self.grid.hi+1, idx])
+                        q[self.grid.lo:self.grid.hi+1, idx], lw=2)
                 ax[idx].grid(color="0.5", linestyle=":")
                 if idx == self.v.nvar-1:
                     ax[idx].set_xlabel("x")
