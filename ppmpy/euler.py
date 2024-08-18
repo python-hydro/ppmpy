@@ -56,10 +56,8 @@ class Euler:
         are: "reflect", "outflow", "periodic"
     init_cond : function
         the function to call to initialize the conserved state.
-        This has the signature `init_cond(grid, v, gamma, U, params)`
-        where `grid` is a `FVGrid`, `v` is a `FluidVars`, and `params`
-        is a `dict` with any optional parameters needed for
-        initialization.
+        This has the signature `init_cond(euler)`
+        where `euler` is an `Euler` object.
     grav_func : function
         the function to call to compute the gravitational acceleration.
         This has the signature: `g = grav_func(grid, rho, params)`, where
@@ -130,11 +128,14 @@ class Euler:
         self.g_parabola = None
 
         # initialize
-        init_cond(self.grid, self.v, self.U, self.params)
+        init_cond(self)
         for n in range(self.v.nvar):
             self.grid.ghost_fill(self.U[:, n],
                                  bc_left_type=self.bcs_left[n],
                                  bc_right_type=self.bcs_right[n])
+
+        # save ICs for later diagnostics
+        self.U_init = self.U.copy()
 
         self.use_hse_reconstruction = use_hse_reconstruction
         self.use_flattening = use_flattening
