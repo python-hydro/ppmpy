@@ -4,7 +4,7 @@
 import numpy as np
 
 
-def sod(g, v, gamma, U, params):  # pylint: disable=W0613
+def sod(g, v, U, params):  # pylint: disable=W0613
     """Initial conditions for the classic Sod shock tube problem
 
     Parameters
@@ -13,17 +13,18 @@ def sod(g, v, gamma, U, params):  # pylint: disable=W0613
         the grid object
     v : FluidVars
         the fluid variables object
-    gamma : float
-        the ratio of specific heats
     U : ndarray
         the conserved state array
     params : dict
-        a dictionary of parameters (not used)
+        a dictionary of parameters.
+        We expect gamma to be provided here
 
     Returns
     -------
     None
     """
+
+    gamma = params["gamma"]
 
     # setup initial conditions -- this is Sod's problem
     rho_l = 1.0
@@ -45,7 +46,7 @@ def sod(g, v, gamma, U, params):  # pylint: disable=W0613
     U[idx_r, v.uener] = p_r/(gamma - 1.0) + 0.5 * rho_r * u_r**2
 
 
-def acoustic_pulse(g, v, gamma, U, params):  # pylint: disable=W0613
+def acoustic_pulse(g, v, U, params):  # pylint: disable=W0613
     """The acoustic pulse problem from McCorquodale & Colella 2011
 
     Parameters
@@ -54,17 +55,18 @@ def acoustic_pulse(g, v, gamma, U, params):  # pylint: disable=W0613
         the grid object
     v : FluidVars
         the fluid variables object
-    gamma : float
-        the ratio of specific heats
     U : ndarray
         the conserved state array
     params : dict
         a dictionary of parameters (not used)
+        We expect gamma to be provided here
 
     Returns
     -------
     None
     """
+
+    gamma = params["gamma"]
 
     xcenter = 0.5 * (g.xmin + g.xmax)
 
@@ -82,17 +84,14 @@ def acoustic_pulse(g, v, gamma, U, params):  # pylint: disable=W0613
     U[:, v.uener] = p / (gamma - 1.0) + 0.5 * rho * u**2
 
 
-def hse(grid, v, gamma, U, params):
+def hse(grid, v, U, params):
     """An isothermal hydrostatic atmosphere.
-
     Parameters
     ----------
     grid : FVGrid
         the grid object
     v : FluidVars
         the fluid variables object
-    gamma : float
-        the ratio of specific heats
     U : ndarray
         the conserved state array
     params : dict
@@ -101,6 +100,7 @@ def hse(grid, v, gamma, U, params):
         *  `base_density` :  the density at the lower boundary
         * `base_pressure` :  the pressure at the lower boundary
         * `g_const` : the gravitational acceleration
+        * `gamma` : the ratio of specific heats
 
     Returns
     -------
@@ -110,6 +110,7 @@ def hse(grid, v, gamma, U, params):
     rho_base = params["base_density"]
     pres_base = params["base_pressure"]
     g = params["g_const"]
+    gamma = params["gamma"]
 
     verbose = params.get("verbose", False)
 

@@ -54,8 +54,6 @@ class Euler:
     bc_left_type : str
         boundary condition type at the right edge.  Allowed values
         are: "reflect", "outflow", "periodic"
-    gamma : float
-        the ratio of specific heats
     init_cond : function
         the function to call to initialize the conserved state.
         This has the signature `init_cond(grid, v, gamma, U, params)`
@@ -69,7 +67,8 @@ class Euler:
         is a `dict` of option parameters needed to interpret gravity.
     params : dict, optional
         a dictionary of parameters that is passed to the initial condition
-        and gravity functions.
+        and gravity functions.  The ratio specific heats can be set
+        here as "gamma".
     use_hse_reconstruction : bool, optional
         do we subtract off HSE from pressure before doing the parabolic
         reconstruction?
@@ -92,7 +91,6 @@ class Euler:
         self.v = FluidVars()
 
         self.C = C
-        self.gamma = gamma
         self.fixed_dt = fixed_dt
 
         self.grav_func = grav_func
@@ -104,6 +102,11 @@ class Euler:
             self.params = {}
         else:
             self.params = params
+
+        self.gamma = self.params.get("gamma", 1.4)
+
+        if "gamma" not in self.params:
+            self.params["gamma"] = gamma
 
         # setup the BCs -- we need the flexibiility to have different
         # types for each state variable.  In particular, we want
@@ -127,7 +130,7 @@ class Euler:
         self.g_parabola = None
 
         # initialize
-        init_cond(self.grid, self.v, self.gamma, self.U, self.params)
+        init_cond(self.grid, self.v, self.U, self.params)
         for n in range(self.v.nvar):
             self.grid.ghost_fill(self.U[:, n],
                                  bc_left_type=self.bcs_left[n],
