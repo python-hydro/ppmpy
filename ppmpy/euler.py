@@ -70,6 +70,8 @@ class Euler:
     use_hse_reconstruction : bool, optional
         do we subtract off HSE from pressure before doing the parabolic
         reconstruction?
+    hse_as_perturbation : bool, optional
+        do we do the characteristic tracing on p' -- the pressure perturbation?
     use_limiting : bool, optional
         do we limit the parabola coefficients?
     use_flattening : bool, optional
