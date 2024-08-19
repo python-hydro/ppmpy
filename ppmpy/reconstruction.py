@@ -277,12 +277,17 @@ class HSEPPMInterpolant(PPMInterpolant):
         the flattening coefficient.
     """
 
-    def __init__(self, grid, p, rho, g, *, limit=True, chi_flat=None):
+    def __init__(self, grid, p, rho, g, *, limit=True, chi_flat=None, leave_as_perturbation=False):
 
         super().__init__(grid, p, limit=limit, chi_flat=chi_flat)
 
         self.rho = rho
         self.g = g
+
+        self.p_hse_m = None
+        self.p_hse_p = None
+
+        self.leave_as_perturbation = leave_as_perturbation
 
     def construct_parabola(self):
         """compute the coefficients of a parabolic interpolant for the
@@ -377,10 +382,19 @@ class HSEPPMInterpolant(PPMInterpolant):
             self.am[:] = (1.0 - self.chi_flat[:]) * p_hse[:] + self.chi_flat[:] * self.am[:]
             self.ap[:] = (1.0 - self.chi_flat[:]) * p_hse[:] + self.chi_flat[:] * self.ap[:]
 
-        # finally, add back in the HSE correction
-        self.ap[:] += self.a[:] + 0.5 * self.grid.dx * self.rho[:] * self.g[:]
-        self.am[:] += self.a[:] - 0.5 * self.grid.dx * self.rho[:] * self.g[:]
+        self.p_hse_p = self.a[:] + 0.5 * self.grid.dx * self.rho[:] * self.g[:]
+        self.p_hse_m = self.a[:] - 0.5 * self.grid.dx * self.rho[:] * self.g[:]
 
-        self.a6 = 6.0 * self.a - 3.0 * (self.am + self.ap)
+        if not self.leave_as_perturbation:
+
+            # finally, add back in the HSE correction
+            self.ap[:] += self.p_hse_p[:]
+            self.am[:] += self.p_hse_m[:]
+
+            self.a6 = 6.0 * self.a - 3.0 * (self.am + self.ap)
+
+        else:
+            # the cell-center state here is zero, since we subtract off pressur
+            self.a6 = - 3.0 * (self.am + self.ap)
 
         self.initialized = True

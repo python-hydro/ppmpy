@@ -82,7 +82,7 @@ class Euler:
                  gamma=1.4,
                  init_cond=None, grav_func=None,
                  params=None,
-                 use_hse_reconstruction=False,
+                 use_hse_reconstruction=False, hse_as_perturbation=False,
                  use_limiting=True, use_flattening=True):
 
         self.grid = FVGrid(nx, ng=4)
@@ -138,6 +138,8 @@ class Euler:
         self.U_init = self.U.copy()
 
         self.use_hse_reconstruction = use_hse_reconstruction
+        self.hse_as_perturbation = hse_as_perturbation
+
         self.use_flattening = use_flattening
         self.use_limiting = use_limiting
 
@@ -198,7 +200,7 @@ class Euler:
         for ivar in range(self.v.nvar):
             if ivar == self.v.qp and self.use_hse_reconstruction:
                 self.q_parabola.append(HSEPPMInterpolant(self.grid, q[:, ivar], q[:, self.v.qrho], g,
-                                                      limit=self.use_limiting, chi_flat=chi))
+                                                      limit=self.use_limiting, chi_flat=chi, leave_as_perturbation=self.hse_as_perturbation))
             else:
                 self.q_parabola.append(PPMInterpolant(self.grid, q[:, ivar],
                                                       limit=self.use_limiting, chi_flat=chi))
@@ -272,13 +274,23 @@ class Euler:
             q_ref_m = Im[i, 0, :]
 
             # build eigensystem
-            ev, lvec, rvec = eigen(q_ref_m[self.v.qrho], q_ref_m[self.v.qu], q_ref_m[self.v.qp], self.gamma)
+            if self.use_hse_reconstruction and self.hse_as_perturbation:
+                # we need to make the reference state a pressure again
+                ev, lvec, rvec = eigen(q_ref_m[self.v.qrho],
+                                       q_ref_m[self.v.qu],
+                                       self.q_parabola[self.v.qp].p_hse_m[i] + q_ref_m[self.v.qp],
+                                       self.gamma)
+            else:
+                ev, lvec, rvec = eigen(q_ref_m[self.v.qrho],
+                                       q_ref_m[self.v.qu],
+                                       q_ref_m[self.v.qp],
+                                       self.gamma)
 
             # loop over waves and compute l . (qref - I) for each wave
             beta_xm = np.zeros(3)
             for iwave in range(3):
                 dq = q_ref_m - Im[i, iwave, :]
-                if self.grav_func is not None:
+                if self.grav_func is not None and not self.hse_as_perturbation:
                     dq[self.v.qu] -= 0.5 * self.dt * Im_g[i, iwave]
                 beta_xm[iwave] = lvec[iwave, :] @ dq
 
@@ -289,19 +301,31 @@ class Euler:
                 if ev[iwave] <= 0:
                     q_right[i, :] -= beta_xm[iwave] * rvec[iwave, :]
 
+            if self.use_hse_reconstruction and self.hse_as_perturbation:
+                q_right[i, self.v.qp] += self.q_parabola[self.v.qp].p_hse_m[i]
+
             # left state on interface i+1 -- this uses the "p" reconstructuion
 
             # reference state -- fastest wave moving to the right
             q_ref_p = Ip[i, 2, :]
 
             # build eigensystem
-            ev, lvec, rvec = eigen(q_ref_p[self.v.qrho], q_ref_p[self.v.qu], q_ref_p[self.v.qp], self.gamma)
+            if self.use_hse_reconstruction and self.hse_as_perturbation:
+                ev, lvec, rvec = eigen(q_ref_p[self.v.qrho],
+                                       q_ref_p[self.v.qu],
+                                       self.q_parabola[self.v.qp].p_hse_p[i] + q_ref_p[self.v.qp],
+                                       self.gamma)
+            else:
+                ev, lvec, rvec = eigen(q_ref_p[self.v.qrho],
+                                       q_ref_p[self.v.qu],
+                                       q_ref_p[self.v.qp],
+                                       self.gamma)
 
             # loop over waves and compute l . (qref - I) for each wave
             beta_xp = np.zeros(3)
             for iwave in range(3):
                 dq = q_ref_p - Ip[i, iwave, :]
-                if self.grav_func is not None:
+                if self.grav_func is not None and not self.hse_as_perturbation:
                     dq[self.v.qu] -= 0.5 * self.dt * Ip_g[i, iwave]
                 beta_xp[iwave] = lvec[iwave, :] @ dq
 
@@ -311,6 +335,9 @@ class Euler:
             for iwave in range(3):
                 if ev[iwave] >= 0:
                     q_left[i+1, :] -= beta_xp[iwave] * rvec[iwave, :]
+
+            if self.use_hse_reconstruction and self.hse_as_perturbation:
+                q_left[i+1, self.v.qp] += self.q_parabola[self.v.qp].p_hse_p[i]
 
         # enforce reflection
         for n in range(self.v.nvar):
