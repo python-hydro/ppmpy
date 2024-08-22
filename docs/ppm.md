@@ -44,7 +44,7 @@ because there are 3 characteristic waves.  The basic overview of the method is:
 
   \begin{align*}
   \mathcal{I}_+^{(\nu)}({\bf q}_i) &=
-      \frac{1}{\sigma_i^{(\nu)}} \Delta x \int_{x_{i+1/2} - \sigma_i^{(\nu)}\Delta x}^{x_{i+1/2}} {\bf q}(x) \, dx \\
+      \frac{1}{\sigma_i^{(\nu)} \Delta x} \int_{x_{i+1/2} - \sigma_i^{(\nu)}\Delta x}^{x_{i+1/2}} {\bf q}(x) \, dx \\
       &= {\bf q}_{+,i} - \frac{\sigma_i^{(\nu)}}{2} \left [ \Delta {\bf q}_i - {\bf q}_{6,i} \left (1 - \frac{2}{3} \sigma_i^{(\nu)}\right )\right ]
   \end{align*}
 
@@ -52,7 +52,7 @@ because there are 3 characteristic waves.  The basic overview of the method is:
 
   \begin{align*}
   \mathcal{I}_-^{(\nu)}({\bf q}_i) &=
-      \frac{1}{\sigma_i^{(\nu)}} \Delta x \int_{x_{i-1/2}}^{x_{i-1/2} + \sigma_i^{(\nu)}\Delta x} {\bf q}(x) \, dx \\
+      \frac{1}{\sigma_i^{(\nu)} \Delta x} \int_{x_{i-1/2}}^{x_{i-1/2} + \sigma_i^{(\nu)}\Delta x} {\bf q}(x) \, dx \\
       &= {\bf q}_{-,i} + \frac{\sigma_i^{(\nu)}}{2} \left [ \Delta {\bf q}_i + {\bf q}_{6,i} \left (1 - \frac{2}{3} \sigma_i^{(\nu)}\right )\right ]
   \end{align*}
 
