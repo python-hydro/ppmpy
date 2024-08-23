@@ -23,7 +23,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/zingale/ppmpy"
+Homepage = "https://github.com/python-hydro/ppmpy"
 
 
 # packaging
