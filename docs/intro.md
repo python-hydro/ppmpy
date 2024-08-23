@@ -7,7 +7,7 @@ with variations of the core PPM algorithm.
 
 ## Repo
 
-https://github.com/zingale/ppmpy
+https://github.com/python-hydro/ppmpy
 
 ## Installation
 
