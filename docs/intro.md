@@ -11,7 +11,17 @@ https://github.com/python-hydro/ppmpy
 
 ## Installation
 
-From the root `ppmpy/` directory, do:
+### PyPI
+
+PPMpy is available on PyPI and can be installed as:
+
+```
+pip install ppmpy
+```
+
+### Source installation
+
+To install from source, in the root `ppmpy/` directory, do:
 
 ```
 pip install .
