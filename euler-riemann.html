@@ -1,0 +1,940 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Euler Riemann Problem &#8212; PPMpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/myfile.css?v=359afcf4" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'euler-riemann';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The Piecewise Parabolic Method for Hydrodynamics" href="ppm.html" />
+    <link rel="prev" title="Euler Equations" href="euler-eqs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PPMpy</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    PPMpy
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="euler-eqs.html">Euler Equations</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Euler Riemann Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ppm.html">The Piecewise Parabolic Method for Hydrodynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ppm-reconstruction.html">PPM reconstruction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Advection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="advection.html">PPM Linear Advection Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advection-convergence.html">Convergence of Linear Advection</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Hydrodynamics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="euler.html">Using the Euler solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convergence.html">Convergence of the Euler Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hse-reconstruction.html">Gravity and Hydrostatic Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hse.html">HSE Convergence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="ppmpy.html">ppmpy package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.advection.html">ppmpy.advection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.eigen.html">ppmpy.eigen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.euler.html">ppmpy.euler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.gravity.html">ppmpy.gravity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.grid.html">ppmpy.grid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.initial_conditions.html">ppmpy.initial_conditions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.reconstruction.html">ppmpy.reconstruction module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.riemann_exact.html">ppmpy.riemann_exact module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/python-hydro/ppmpy/main?urlpath=tree/docs/euler-riemann.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/python-hydro/ppmpy/blob/main/docs/euler-riemann.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/python-hydro/ppmpy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/python-hydro/ppmpy/issues/new?title=Issue%20on%20page%20%2Feuler-riemann.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/euler-riemann.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Euler Riemann Problem</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-star-state">Finding the star state</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shock-jump-conditions">Shock jump conditions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shock-speed">Shock speed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rarefaction-solution">Rarefaction solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-the-solution">Sampling the Solution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wave-speeds">Wave speeds</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#shock-case">Shock case</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#contact-discontinuity">Contact discontinuity</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rarefaction">Rarefaction</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#density">Density</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling">Sampling</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="euler-riemann-problem">
+<h1>Euler Riemann Problem<a class="headerlink" href="#euler-riemann-problem" title="Link to this heading">#</a></h1>
+<p>To compute the fluxes through the interface, we will need to solve the Riemann
+problem for the Euler equations.  We will formulate it such that we have
+left and right primitive variable states and we want to find the unique state on the interface:</p>
+<div class="math notranslate nohighlight">
+\[{\bf q}_{i+1/2} = \mathcal{R}({\bf q}_{i+1/2,L}, {\bf q}_{i+1/2,R})\]</div>
+<p>Information about the jump across this interface will be carried away from the interface by the 3 hydrodynamic waves (<span class="math notranslate nohighlight">\(u\)</span> and <span class="math notranslate nohighlight">\(u\pm c\)</span>).  We can define 4 regions separated by the three waves, which we’ll call <span class="math notranslate nohighlight">\(L\)</span>, <span class="math notranslate nohighlight">\(L_\star\)</span>, <span class="math notranslate nohighlight">\(R_\star\)</span>, and <span class="math notranslate nohighlight">\(R\)</span>.</p>
+<p><img alt="Riemann solution structure" src="_images/riemann-waves.png" /></p>
+<p>We also know the following about the wave structure:</p>
+<ul class="simple">
+<li><p>The middle wave is always a contact discontinuity.  Pressure and velocity are constant across it</p></li>
+<li><p>The left and right waves are either a shock or rarefaction</p>
+<ul>
+<li><p>Rarefaction:</p>
+<ul>
+<li><p>Entropy is constant across the wave</p></li>
+<li><p>Riemann invariants tell us how to connect the solution across the wave to the star region</p></li>
+</ul>
+</li>
+<li><p>Shock:</p>
+<ul>
+<li><p>Must be dissipative—entropy is not conserved</p></li>
+<li><p>Jump conditions tell us how to connect to the star state across the shock</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>We see that:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(L\)</span> and <span class="math notranslate nohighlight">\(R\)</span> are just our original states—since no waves have reached them yet, the state is unchanged.</p></li>
+<li><p>The star states are between the left and right state.</p>
+<ul>
+<li><p>We know from the eigenvectors that all 3 primitive variables, <span class="math notranslate nohighlight">\((\rho, u, p)\)</span> jump across the left and right state.</p></li>
+<li><p>From the center eigenvector, we know only the density jumps.  That means in the star region, the only unknowns are:</p>
+<div class="math notranslate nohighlight">
+\[u_\star, p_\star, \rho_{\star,L}, \rho_{\star,R}\]</div>
+</li>
+</ul>
+</li>
+</ul>
+<section id="finding-the-star-state">
+<h2>Finding the star state<a class="headerlink" href="#finding-the-star-state" title="Link to this heading">#</a></h2>
+<p>Our first goal is to find the star state.  To do this,
+we need to know how much each variable changes across each of the three waves.  To complicate matters, the left and right waves can be either shocks or rarefactions.<br />
+For a gamma-law gas, we can write down analytic expressions for the change in the primitive variables across both a rarefaction and shock.  We can then solve these to find the state in-between the left and right waves—the star state.</p>
+<section id="shock-jump-conditions">
+<h3>Shock jump conditions<a class="headerlink" href="#shock-jump-conditions" title="Link to this heading">#</a></h3>
+<p>For the case where the left or right wave is a shock, we use the Rankine-Hugoniot jump conditions to connect the states across the wave.  The generalized version of the jump conditions for a system is:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\bf{F}({\bf U}_\star) - {\bf F}({\bf U_s})}{{\bf U}_\star - {\bf U}_s} = S\]</div>
+<p>where <span class="math notranslate nohighlight">\(s \in [L, R]\)</span> is the state to the left or right of the interface and <span class="math notranslate nohighlight">\(S\)</span> is the shock speed.</p>
+<p>We can write the jump conditions in the frame of the shock as (for the left wave).  Then:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+\rho_L \hat{u}_L &amp;= \rho_\star \hat{u}_\star \\
+\rho_L \hat{u}_L^2 + p_L &amp;= \rho_\star {\hat{u}_\star}^2 + p_\star \\
+\rho_L e_L \hat{u}_L + p_L \hat{u}_L + \frac{1}{2} \rho_L \hat{u}_L^3 &amp;=
+       \rho_\star e_\star \hat{u}_\star + p_\star \hat{u}_\star + \frac{1}{2}\rho_\star {\hat{u}_\star}^3
+\end{align*}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{u} = u - S\)</span> (for both the <span class="math notranslate nohighlight">\(\star\)</span> and <span class="math notranslate nohighlight">\(L\)</span> velocity), and <span class="math notranslate nohighlight">\(S\)</span> is the shock speed.</p>
+<p>With a lot of algebra, you can find the relation of <span class="math notranslate nohighlight">\(u_\star\)</span> to <span class="math notranslate nohighlight">\(u_L\)</span> as:</p>
+<div class="math notranslate nohighlight">
+\[u_\star = u_L + \frac{2 c_L}{\sqrt{2 \gamma(\gamma-1)}} \frac{1 - \frac{p_\star}{p_L}}{\sqrt{1 + \frac{\gamma + 1}{\gamma -1} \frac{p_\star}{p_L}}}\]</div>
+<p>and similarly for a shock across the right wave:</p>
+<div class="math notranslate nohighlight">
+\[u_\star = u_R - \frac{2 c_R}{\sqrt{2 \gamma(\gamma-1)}} \frac{1 - \frac{p_\star}{p_R}}{\sqrt{1 + \frac{\gamma + 1}{\gamma -1} \frac{p_\star}{p_R}}}\]</div>
+</section>
+<section id="shock-speed">
+<h3>Shock speed<a class="headerlink" href="#shock-speed" title="Link to this heading">#</a></h3>
+<p>Likewise, we can find the shock speed for the gamma-law case, via the mass flux condition
+across the shock, giving:</p>
+<div class="math notranslate nohighlight">
+\[S = u_R + c_R \sqrt{\frac{\gamma + 1}{2\gamma} \left (\frac{p_\star}{p_R} \right ) + \frac{\gamma -1}{2\gamma}}\]</div>
+</section>
+<section id="rarefaction-solution">
+<h3>Rarefaction solution<a class="headerlink" href="#rarefaction-solution" title="Link to this heading">#</a></h3>
+<p>To understand a rarefaction, let’s replace the pressure equation in our system with an entropy equation.  Entropy evolves according to:</p>
+<div class="math notranslate nohighlight">
+\[\frac{Ds}{Dt} = 0\]</div>
+<p>but now we need to replace the pressure gradient in the momentum equation:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial p(\rho, s)}{\partial x} = 
+  \left . \frac{\partial p}{\partial s} \right |_\rho \frac{\partial s}{\partial x} +
+  \left . \frac{\partial p}{\partial \rho} \right |_s \frac{\partial \rho}{\partial x}
+=
+  \left . \frac{\partial p}{\partial s} \right |_\rho \frac{\partial s}{\partial x} +
+  \frac{p\Gamma_1}{\rho} \frac{\partial \rho}{\partial x}
+\]</div>
+<p>and our system becomes:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left ( \begin{array}{c} \rho \\ u \\ s \end{array} \right )_t +
+     \left ( \begin{array}{ccc} u &amp; \rho &amp; 0 \\
+                                c^2/\rho &amp; u &amp; \frac{p_s}{\rho}\\
+                                0 &amp; 0 &amp; u \end{array} \right )
+\left ( \begin{array}{c} \rho \\ u \\ s \end{array} \right )_x
+\end{split}\]</div>
+<p>with <span class="math notranslate nohighlight">\(p_s = \partial p / \partial s |_\rho\)</span>.
+This has the same eigenvalues as our primitive variable system, but now the right eigenvectors are:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+{\bf r}^{(-)} = \left (\begin{array}{c} 1 \\ -c/\rho \\ 0 \end{array} \right )
+\qquad
+{\bf r}^{(0)} = \left (\begin{array}{c} 1 \\ 0 \\ -c^2 / p_s \end{array} \right )
+\qquad
+{\bf r}^{(+)} = \left (\begin{array}{c} 1 \\ c/\rho \\ 0 \end{array} \right )
+\end{split}\]</div>
+<p>We see that entropy is constant across a rarefaction.  We can use this to find the solution linking
+the states across a rarefaction.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We can only use this system when describing rarefactions.  Shocks are dissipative, so entropy will increase across them.</p>
+</div>
+<p>We’ll work back with the primitive variables now.
+Across the left wave (’<span class="math notranslate nohighlight">\(-\)</span>’ ), the characteristic variable <span class="math notranslate nohighlight">\(w^{(+)}\)</span> is constant, which is defined as:</p>
+<div class="math notranslate nohighlight">
+\[{\bf l}^{(+)} \cdot d{\bf q} = 0\]</div>
+<p>Finding the left eigenvalue and doing the dot product gives:</p>
+<div class="math notranslate nohighlight">
+\[du + \frac{dp}{\rho c} = 0\]</div>
+<p>across the left wave.  The general solution to this is:</p>
+<div class="math notranslate nohighlight">
+\[u = - \int \frac{dp}{\rho c}\]</div>
+<p>For a gamma-law equation of state, constant entropy means:</p>
+<div class="math notranslate nohighlight">
+\[p = K \rho^\gamma\]</div>
+<p>and we can do the integral and we find:</p>
+<div class="math notranslate nohighlight">
+\[u + \frac{2c}{\gamma - 1} = \mbox{constant}\]</div>
+<p>Similarly across the right wave we find:</p>
+<div class="math notranslate nohighlight">
+\[u - \frac{2c}{\gamma - 1} = \mbox{constant}\]</div>
+<p>These are called the <em>Riemann invariants</em>.</p>
+<p>We can use these to link the states across the rarefaction, and we find:</p>
+<div class="math notranslate nohighlight">
+\[u_\star = u_L + \frac{2 c_L}{\gamma - 1} \left [ 1 - \left ( \frac{p_\star}{p_L} \right )^{(\gamma-1)/2\gamma} \right ]\]</div>
+<p>for the left rarefaction, and</p>
+<div class="math notranslate nohighlight">
+\[u_\star = u_R - \frac{2 c_R}{\gamma - 1} \left [ 1 - \left ( \frac{p_\star}{p_R} \right )^{(\gamma-1)/2\gamma} \right ]\]</div>
+<p>for the right rarefaction.</p>
+</section>
+<section id="implementation">
+<h3>Implementation<a class="headerlink" href="#implementation" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ppmpy</span> <span class="kn">import</span> <span class="n">RiemannProblem</span><span class="p">,</span> <span class="n">State</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ppmpy</span></code> provides a <code class="docutils literal notranslate"><span class="pre">State</span></code> class that holds the left or right interface state and the <code class="docutils literal notranslate"><span class="pre">RiemannProblem</span></code> class that implements the Riemann problem, with methods to find the star state and then find the state on the interface.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">find_star_state()</span></code> method solves for the star state.  This needs to find the <span class="math notranslate nohighlight">\(p_\star\)</span> such that:</p>
+<div class="math notranslate nohighlight">
+\[u_{\star,L}(p_\star) = u_{\star,R}(p_\star)\]</div>
+<p>If <span class="math notranslate nohighlight">\(p_\star &gt; p_s\)</span>, for <span class="math notranslate nohighlight">\(s \in {L, R}\)</span>, then we are a shock (compression), otherwise we are a rarefaction.  So our functions are:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+u_{\star,L}(p_\star) = u_L + \left \{ \begin{array}{cc} 
+\frac{2 c_L}{\sqrt{2 \gamma (\gamma -1)}} \frac{1 - {p_\star}/{p_L}}{\sqrt{1 + \frac{\gamma+1}{\gamma-1} \frac{p_\star}{p_L}} } &amp; p_\star &gt; p_L \\[4 mm]
+\frac{2 c_L}{\gamma -1} \left [ 1 - \left ( {p_\star}/{p_L} \right )^{(\gamma-1)/(2\gamma)} \right ]
+ &amp; p_\star \le p_L \end{array} \right .
+ \end{split}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+u_{\star,R}(p_\star) = u_R - \left \{ \begin{array}{cc} 
+\frac{2 c_R}{\sqrt{2 \gamma (\gamma -1)}} \frac{1 - {p_\star}/{p_R}}{\sqrt{1 + \frac{\gamma+1}{\gamma-1} \frac{p_\star}{p_R}} } &amp; p_\star &gt; p_R \\[4 mm]
+\frac{2 c_R}{\gamma -1} \left [ 1 - \left ( {p_\star}/{p_R} \right )^{(\gamma-1)/(2\gamma)} \right ]
+ &amp; p_\star \le p_R \end{array} \right .
+\end{split}\]</div>
+<p>We solve this by picking a guess for <span class="math notranslate nohighlight">\(p_\star\)</span> and then root finding on the constraint that the velocity in the star region is the same when we come from the left as when we come from the right.</p>
+<p>Let’s consider the Sod problem.  We can visualize the solution in the <span class="math notranslate nohighlight">\(u\)</span>-<span class="math notranslate nohighlight">\(p\)</span> plane via the <code class="docutils literal notranslate"><span class="pre">plot_hugoniot()</span></code> method.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ppmpy.riemann_exact</span> <span class="kn">import</span> <span class="n">plot_hugoniot</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">left</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.125</span><span class="p">)</span>
+
+<span class="n">rp</span> <span class="o">=</span> <span class="n">RiemannProblem</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+<span class="n">rp</span><span class="o">.</span><span class="n">find_star_state</span><span class="p">()</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_hugoniot</span><span class="p">(</span><span class="n">rp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/e57714206aca14345c443e137e70ffbce5f8661e0945a697dfda5f629479b17b.png" src="_images/e57714206aca14345c443e137e70ffbce5f8661e0945a697dfda5f629479b17b.png" />
+</div>
+</div>
+<p>In this figure, a shock is shown as a solid line and a rarefaction is shown as a dotted line.  The solution is where the curves intersect, and we see that the a shock connects the right state to the star state and a rarefaction connects the left state to the star state.</p>
+</section>
+</section>
+<section id="sampling-the-solution">
+<h2>Sampling the Solution<a class="headerlink" href="#sampling-the-solution" title="Link to this heading">#</a></h2>
+<p>To find the interface state, we need to sample the solution.  This is done via the <code class="docutils literal notranslate"><span class="pre">sample_solution()</span></code> method.</p>
+<p>Consider the following 4 cases:</p>
+<p><img alt="Riemann state" src="_images/riemann_state.png" /></p>
+<p>Cases (a) and (d) represent supersonic flow to the left or right—all 3 waves are on one side of the interface.</p>
+<ul class="simple">
+<li><p>For case (a), all 3 waves are to the left of the interface, so state <span class="math notranslate nohighlight">\(R\)</span> is on the interface.</p></li>
+<li><p>For case (d) is similar, all 3 waves are to the right of the interface, so state <span class="math notranslate nohighlight">\(L\)</span> is on the interface.</p></li>
+</ul>
+<p>In cases (b) and (c), one the “<span class="math notranslate nohighlight">\(+\)</span>” and “<span class="math notranslate nohighlight">\(-\)</span>” waves are on either side of the interface and the only difference is the center (”<span class="math notranslate nohighlight">\(0\)</span>”) wave, or contact discontinuity.  So we would determine which of the star states is on the interface based on the sign of the contact discontinuity’s speed.</p>
+<ul class="simple">
+<li><p>For case (b), the contact is moving to the left so <span class="math notranslate nohighlight">\(R_\star\)</span> state is on the interface</p></li>
+<li><p>For case (c), the contact is moving to the right, so the <span class="math notranslate nohighlight">\(L_\star\)</span> state is on the interface.</p></li>
+</ul>
+<section id="wave-speeds">
+<h3>Wave speeds<a class="headerlink" href="#wave-speeds" title="Link to this heading">#</a></h3>
+<section id="shock-case">
+<h4>Shock case<a class="headerlink" href="#shock-case" title="Link to this heading">#</a></h4>
+<p>For a shock, the speed of the shock comes from the Rankine-Hugoniot conditions.</p>
+<p>For the left wave, the shock speed is:</p>
+<div class="math notranslate nohighlight">
+\[
+S = u_L - c_L \sqrt{\frac{\gamma + 1}{2\gamma} \left (\frac{p_\star}{p_L} \right ) + \frac{\gamma -1}{2\gamma}}
+\]</div>
+<p>For the right wave, it is:</p>
+<div class="math notranslate nohighlight">
+\[
+S = u_R + c_R \sqrt{\frac{\gamma + 1}{2\gamma} \left (\frac{p_\star}{p_R} \right ) + \frac{\gamma -1}{2\gamma}}
+\]</div>
+</section>
+<section id="contact-discontinuity">
+<h4>Contact discontinuity<a class="headerlink" href="#contact-discontinuity" title="Link to this heading">#</a></h4>
+<p>A contact discontinuity propagates in the star region, and the velocity there is <span class="math notranslate nohighlight">\(u_\star\)</span> and is constant in that region, so the contact just propagates at this speed:</p>
+<div class="math notranslate nohighlight">
+\[S_0 = u_\star\]</div>
+</section>
+</section>
+<section id="rarefaction">
+<h3>Rarefaction<a class="headerlink" href="#rarefaction" title="Link to this heading">#</a></h3>
+<p>A rarefaction is subsonic, but it is spread out (it is not a discontinuity).  We call the leading part the “head” and the trailing part the “tail”.  The head and tail move at different speeds, just <span class="math notranslate nohighlight">\(u \pm c\)</span> corresponding to the region they abut.</p>
+<p>For a left rarefaction:</p>
+<div class="math notranslate nohighlight">
+\[S_\mathrm{head} = u_L - c_L\]</div>
+<div class="math notranslate nohighlight">
+\[S_\mathrm{tail} = u_\star - c_\star\]</div>
+<p>For a right rarefaction:</p>
+<div class="math notranslate nohighlight">
+\[S_\mathrm{head} = u_R + c_R\]</div>
+<div class="math notranslate nohighlight">
+\[S_\mathrm{tail} = u_\star + c_\star\]</div>
+<p>Note that <span class="math notranslate nohighlight">\(|S_\mathrm{head}| &gt; |S_\mathrm{tail}|\)</span>, so the rarefaction spreads out over time.</p>
+<p>Also, it is possible for the rarefaction to span the interface—with the head on one side and the tail on the other.  We’ll deal with this shortly.</p>
+<section id="density">
+<h4>Density<a class="headerlink" href="#density" title="Link to this heading">#</a></h4>
+<p>To compute the rarefaction speed, we need to know the density in the star state (so we can evaluate <span class="math notranslate nohighlight">\(c_\star\)</span>).  We will need this anyway for either a shock or a rarefaction to compute the final fluxes if a star state is on the interface.</p>
+<p>For a rarefaction, since entropy is constant, we have:</p>
+<div class="math notranslate nohighlight">
+\[\frac{p_s}{\rho_s^\gamma} = \frac{p_\star}{\rho_{\star,s}^\gamma}\]</div>
+<p>where <span class="math notranslate nohighlight">\(s \in {L, R}\)</span> is the state outside of the star region.</p>
+<p>For a shock, the jump conditions tell us the density:</p>
+<div class="math notranslate nohighlight">
+\[\rho_{\star,s} = {\rho_s} \frac{\frac{p_\star}{p_s} + \frac{\gamma-1}{\gamma+1}}{\frac{p_\star}{p_s}\frac{\gamma-1}{\gamma+1} + 1}\]</div>
+</section>
+</section>
+<section id="sampling">
+<h3>Sampling<a class="headerlink" href="#sampling" title="Link to this heading">#</a></h3>
+<p>The sampling procedure is the following:</p>
+<ul class="simple">
+<li><p>Look at the sign of the contact speed, <span class="math notranslate nohighlight">\(S_0\)</span>:</p>
+<ul>
+<li><p>If <span class="math notranslate nohighlight">\(S_0 &gt; 0\)</span> then we are either in the <span class="math notranslate nohighlight">\(L\)</span> or <span class="math notranslate nohighlight">\(L_\star\)</span> state</p>
+<ul>
+<li><p>Look at the speed of the left shock or rarefaction to determine
+if we are in the <span class="math notranslate nohighlight">\(L\)</span> or <span class="math notranslate nohighlight">\(L_\star\)</span> state</p></li>
+</ul>
+</li>
+<li><p>If <span class="math notranslate nohighlight">\(S_0 &lt; 0\)</span> then we are either in the <span class="math notranslate nohighlight">\(R\)</span> or <span class="math notranslate nohighlight">\(R_\star\)</span> state</p>
+<ul>
+<li><p>Look at the speed of the right shock or rarefaction to determine
+if we are in the <span class="math notranslate nohighlight">\(R\)</span> or <span class="math notranslate nohighlight">\(R_\star\)</span> state</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>The one catch is when the rarefaction spans the interface, e.g., <span class="math notranslate nohighlight">\(S_\mathrm{head} &lt; 0 &lt; S_\mathrm{tail}\)</span> for a left rarefaction.</p>
+<p><img alt="rarefaction spanning the interface" src="_images/rarefaction_span.png" /></p>
+<p>In this case, we would use the Riemann invariant to find the state at the location of the interface inside the structure of the rarefaction.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qint</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">sample_solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">qint</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rho: 0.4263194281784952; u: 0.9274526200489498; p: 0.30313017805064685
+</pre></div>
+</div>
+</div>
+</div>
+<p>This state can then be used to compute the fluxes through the interface:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}F_{i+1/2} = \left ( \begin{array}{c}
+                             \rho_{i+1/2} u_{i+1/2} \\
+                             \rho_{i+1/2} (u_{i+1/2})^2 + p_{i+1/2} \\
+                             u_{i+1/2} p_{i+1/2} / (\gamma - 1)  +
+                             \frac{1}{2} \rho_{i+1/2} (u_{i+1/2})^3 +
+                             u_{i+1/2} p_{i+1/2}
+                            \end{array} \right )\end{split}\]</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="euler-eqs.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Euler Equations</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ppm.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">The Piecewise Parabolic Method for Hydrodynamics</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-star-state">Finding the star state</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shock-jump-conditions">Shock jump conditions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shock-speed">Shock speed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rarefaction-solution">Rarefaction solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling-the-solution">Sampling the Solution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wave-speeds">Wave speeds</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#shock-case">Shock case</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#contact-discontinuity">Contact discontinuity</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rarefaction">Rarefaction</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#density">Density</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling">Sampling</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By <a href="https://zingale.github.io">Michael Zingale</a>
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p>
+&copy; 2024; CC-BY-NC-SA 4.0
+<p>
+
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

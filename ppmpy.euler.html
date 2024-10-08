@@ -1,0 +1,753 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ppmpy.euler module &#8212; PPMpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/myfile.css?v=359afcf4" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ppmpy.euler';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ppmpy.gravity module" href="ppmpy.gravity.html" />
+    <link rel="prev" title="ppmpy.eigen module" href="ppmpy.eigen.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PPMpy</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    PPMpy
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="euler-eqs.html">Euler Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="euler-riemann.html">Euler Riemann Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ppm.html">The Piecewise Parabolic Method for Hydrodynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ppm-reconstruction.html">PPM reconstruction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Advection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="advection.html">PPM Linear Advection Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advection-convergence.html">Convergence of Linear Advection</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Hydrodynamics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="euler.html">Using the Euler solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convergence.html">Convergence of the Euler Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hse-reconstruction.html">Gravity and Hydrostatic Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hse.html">HSE Convergence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="ppmpy.html">ppmpy package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.advection.html">ppmpy.advection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.eigen.html">ppmpy.eigen module</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">ppmpy.euler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.gravity.html">ppmpy.gravity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.grid.html">ppmpy.grid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.initial_conditions.html">ppmpy.initial_conditions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.reconstruction.html">ppmpy.reconstruction module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.riemann_exact.html">ppmpy.riemann_exact module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/python-hydro/ppmpy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/python-hydro/ppmpy/issues/new?title=Issue%20on%20page%20%2Fppmpy.euler.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/ppmpy.euler.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>ppmpy.euler module</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler"><code class="docutils literal notranslate"><span class="pre">Euler</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.advance_step"><code class="docutils literal notranslate"><span class="pre">Euler.advance_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.compute_fluxes"><code class="docutils literal notranslate"><span class="pre">Euler.compute_fluxes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.cons_flux"><code class="docutils literal notranslate"><span class="pre">Euler.cons_flux()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.cons_to_prim"><code class="docutils literal notranslate"><span class="pre">Euler.cons_to_prim()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.construct_parabola"><code class="docutils literal notranslate"><span class="pre">Euler.construct_parabola()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.draw_prim"><code class="docutils literal notranslate"><span class="pre">Euler.draw_prim()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.draw_waves"><code class="docutils literal notranslate"><span class="pre">Euler.draw_waves()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.estimate_dt"><code class="docutils literal notranslate"><span class="pre">Euler.estimate_dt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.evolve"><code class="docutils literal notranslate"><span class="pre">Euler.evolve()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.interface_states"><code class="docutils literal notranslate"><span class="pre">Euler.interface_states()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.plot_prim"><code class="docutils literal notranslate"><span class="pre">Euler.plot_prim()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.FluidVars"><code class="docutils literal notranslate"><span class="pre">FluidVars</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-ppmpy.euler">
+<span id="ppmpy-euler-module"></span><h1>ppmpy.euler module<a class="headerlink" href="#module-ppmpy.euler" title="Link to this heading">#</a></h1>
+<p>The main Euler solver classes.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Euler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bc_left_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'outflow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bc_right_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'outflow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_cond</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grav_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_hse_reconstruction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hse_as_perturbation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_limiting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_flattening</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A 1D compressible Euler solver using the piecewise parabolic method
+(PPM), following the original Colella &amp; Woodward ideas</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx</strong> (<em>int</em>) – the number of zones</p></li>
+<li><p><strong>C</strong> (<em>float</em>) – the CFL number</p></li>
+<li><p><strong>fixed_dt</strong> (<em>float</em><em>, </em><em>optional</em>) – a fixed timestep to use for every step.  In this case we
+do not estimate the timestep using the CFL criteria.</p></li>
+<li><p><strong>bc_left_type</strong> (<em>str</em>) – boundary condition type at the left edge.  Allowed values
+are: “reflect”, “outflow”, “periodic”</p></li>
+<li><p><strong>bc_left_type</strong> – boundary condition type at the right edge.  Allowed values
+are: “reflect”, “outflow”, “periodic”</p></li>
+<li><p><strong>init_cond</strong> (<em>function</em>) – the function to call to initialize the conserved state.
+This has the signature <cite>init_cond(euler)</cite>
+where <cite>euler</cite> is an <cite>Euler</cite> object.</p></li>
+<li><p><strong>grav_func</strong> (<em>function</em>) – the function to call to compute the gravitational acceleration.
+This has the signature: <cite>g = grav_func(grid, rho, params)</cite>, where
+<cite>grid</cite> is a FVGrid`, <cite>rho</cite> is the density (array), and <cite>params</cite>
+is a <cite>dict</cite> of option parameters needed to interpret gravity.</p></li>
+<li><p><strong>params</strong> (<em>dict</em><em>, </em><em>optional</em>) – a dictionary of parameters that is passed to the initial condition
+and gravity functions.  The ratio specific heats can be set
+here as “gamma”.</p></li>
+<li><p><strong>use_hse_reconstruction</strong> (<em>bool</em><em>, </em><em>optional</em>) – do we subtract off HSE from pressure before doing the parabolic
+reconstruction?</p></li>
+<li><p><strong>hse_as_perturbation</strong> (<em>bool</em><em>, </em><em>optional</em>) – do we do the characteristic tracing on p’ – the pressure perturbation?</p></li>
+<li><p><strong>use_limiting</strong> (<em>bool</em><em>, </em><em>optional</em>) – do we limit the parabola coefficients?</p></li>
+<li><p><strong>use_flattening</strong> (<em>bool</em><em>, </em><em>optional</em>) – do we apply flattening to the shock to smear them out?</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.advance_step">
+<span class="sig-name descname"><span class="pre">advance_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.advance_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.advance_step" title="Link to this definition">#</a></dt>
+<dd><p>Advance the conserved state through a single timestep</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.compute_fluxes">
+<span class="sig-name descname"><span class="pre">compute_fluxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.compute_fluxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.compute_fluxes" title="Link to this definition">#</a></dt>
+<dd><p>given the left and right states, solve the Riemann
+problem to get the interface state and return the fluxes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_left</strong> (<em>ndarray</em>) – the left primitive variable state on the interface.</p></li>
+<li><p><strong>q_right</strong> (<em>ndarray</em>) – the right primitive variable state on the interface.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>flux</strong> – the conserved flux through each interface.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.cons_flux">
+<span class="sig-name descname"><span class="pre">cons_flux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.cons_flux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.cons_flux" title="Link to this definition">#</a></dt>
+<dd><p>given an interface state, return the conservative flux</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>RiemannState</em>) – the interface state from the Riemann solver.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>flux</strong> – the conserved flux through the interface for the input state.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.cons_to_prim">
+<span class="sig-name descname"><span class="pre">cons_to_prim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.cons_to_prim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.cons_to_prim" title="Link to this definition">#</a></dt>
+<dd><p>Convert the conserved variable state to primitive variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>q</strong> – the primitive variable array.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.construct_parabola">
+<span class="sig-name descname"><span class="pre">construct_parabola</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.construct_parabola"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.construct_parabola" title="Link to this definition">#</a></dt>
+<dd><p>Create the parabola reconstruction of the primitive variables</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.draw_prim">
+<span class="sig-name descname"><span class="pre">draw_prim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.draw_prim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.draw_prim" title="Link to this definition">#</a></dt>
+<dd><p>Draw the parabola for a primitive variable (ivar) on a GridPlot object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gp</strong> (<a class="reference internal" href="ppmpy.grid.html#ppmpy.grid.GridPlot" title="ppmpy.grid.GridPlot"><em>GridPlot</em></a>) – the grid plot object for the figure</p></li>
+<li><p><strong>ivar</strong> (<em>int</em>) – the index of the primitive variable to plot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.draw_waves">
+<span class="sig-name descname"><span class="pre">draw_waves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.draw_waves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.draw_waves" title="Link to this definition">#</a></dt>
+<dd><p>Draw the domains seen by each of the 3 characteristic waves
+and the interface they interact with</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gp</strong> (<a class="reference internal" href="ppmpy.grid.html#ppmpy.grid.GridPlot" title="ppmpy.grid.GridPlot"><em>GridPlot</em></a>) – the grid plot object for the figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.estimate_dt">
+<span class="sig-name descname"><span class="pre">estimate_dt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.estimate_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.estimate_dt" title="Link to this definition">#</a></dt>
+<dd><p>compute the Courant-limited timestep from the current
+fluid state</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.evolve">
+<span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmax</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.evolve" title="Link to this definition">#</a></dt>
+<dd><p>The main evolution driver to advance the state to time tmax</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tmax</strong> (<em>float</em>) – maximum simulation time to evolve to</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – enable / disable verbosity</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.interface_states">
+<span class="sig-name descname"><span class="pre">interface_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.interface_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.interface_states" title="Link to this definition">#</a></dt>
+<dd><p>Trace the primitive variables to the interfaces by integrating
+under the parabola and doing a characteristic projection</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>q_left</strong> (<em>ndarray</em>) – the left primitive variable state on the interface.</p></li>
+<li><p><strong>q_right</strong> (<em>ndarray</em>) – the right primitive variable state on the interface.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ppmpy.euler.Euler.plot_prim">
+<span class="sig-name descname"><span class="pre">plot_prim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ppmpy/euler.html#Euler.plot_prim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.Euler.plot_prim" title="Link to this definition">#</a></dt>
+<dd><p>Plot the primitive variable(s) for the current solution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ivar</strong> (<em>int</em>) – the index of the variable to plot (None plots rho, u, p)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>matplotlib.pyplot.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ppmpy.euler.FluidVars">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FluidVars</span></span><a class="reference internal" href="_modules/ppmpy/euler.html#FluidVars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ppmpy.euler.FluidVars" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A simple container that holds the integer indices we will use to
+refer to the different fluid components</p>
+</dd></dl>
+
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ppmpy.eigen.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">ppmpy.eigen module</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ppmpy.gravity.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">ppmpy.gravity module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler"><code class="docutils literal notranslate"><span class="pre">Euler</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.advance_step"><code class="docutils literal notranslate"><span class="pre">Euler.advance_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.compute_fluxes"><code class="docutils literal notranslate"><span class="pre">Euler.compute_fluxes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.cons_flux"><code class="docutils literal notranslate"><span class="pre">Euler.cons_flux()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.cons_to_prim"><code class="docutils literal notranslate"><span class="pre">Euler.cons_to_prim()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.construct_parabola"><code class="docutils literal notranslate"><span class="pre">Euler.construct_parabola()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.draw_prim"><code class="docutils literal notranslate"><span class="pre">Euler.draw_prim()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.draw_waves"><code class="docutils literal notranslate"><span class="pre">Euler.draw_waves()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.estimate_dt"><code class="docutils literal notranslate"><span class="pre">Euler.estimate_dt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.evolve"><code class="docutils literal notranslate"><span class="pre">Euler.evolve()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.interface_states"><code class="docutils literal notranslate"><span class="pre">Euler.interface_states()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.Euler.plot_prim"><code class="docutils literal notranslate"><span class="pre">Euler.plot_prim()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ppmpy.euler.FluidVars"><code class="docutils literal notranslate"><span class="pre">FluidVars</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By <a href="https://zingale.github.io">Michael Zingale</a>
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p>
+&copy; 2024; CC-BY-NC-SA 4.0
+<p>
+
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,867 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Gravity and Hydrostatic Equilibrium &#8212; PPMpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/myfile.css?v=359afcf4" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'hse-reconstruction';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HSE Convergence" href="hse.html" />
+    <link rel="prev" title="Convergence of the Euler Solver" href="convergence.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PPMpy</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    PPMpy
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="euler-eqs.html">Euler Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="euler-riemann.html">Euler Riemann Problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ppm.html">The Piecewise Parabolic Method for Hydrodynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ppm-reconstruction.html">PPM reconstruction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Advection</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="advection.html">PPM Linear Advection Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advection-convergence.html">Convergence of Linear Advection</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Hydrodynamics</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="euler.html">Using the Euler solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convergence.html">Convergence of the Euler Solver</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Gravity and Hydrostatic Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hse.html">HSE Convergence</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="ppmpy.html">ppmpy package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.advection.html">ppmpy.advection module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.eigen.html">ppmpy.eigen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.euler.html">ppmpy.euler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.gravity.html">ppmpy.gravity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.grid.html">ppmpy.grid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.initial_conditions.html">ppmpy.initial_conditions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.reconstruction.html">ppmpy.reconstruction module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppmpy.riemann_exact.html">ppmpy.riemann_exact module</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/python-hydro/ppmpy/main?urlpath=tree/docs/hse-reconstruction.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/python-hydro/ppmpy/blob/main/docs/hse-reconstruction.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Colab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Colab logo" src="_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/python-hydro/ppmpy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/python-hydro/ppmpy/issues/new?title=Issue%20on%20page%20%2Fhse-reconstruction.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/hse-reconstruction.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Gravity and Hydrostatic Equilibrium</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-terms-in-ppm">Source terms in PPM</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hse-problem-setup">The <code class="docutils literal notranslate"><span class="pre">hse</span></code> problem setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-ppm-reconstruction">Normal PPM reconstruction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hydrostatic-pressure-reconstruction">Hydrostatic pressure reconstruction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#addressing-characteristic-tracing">Addressing characteristic tracing</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="gravity-and-hydrostatic-equilibrium">
+<h1>Gravity and Hydrostatic Equilibrium<a class="headerlink" href="#gravity-and-hydrostatic-equilibrium" title="Link to this heading">#</a></h1>
+<p>Here we explore the reconstruction of the pressure when in hydrostatic equilibrium.</p>
+<section id="source-terms-in-ppm">
+<h2>Source terms in PPM<a class="headerlink" href="#source-terms-in-ppm" title="Link to this heading">#</a></h2>
+<p>In the original PPM algorithm, the source terms (including gravity) were included in the characteristic projection.  If we write our system as:</p>
+<div class="math notranslate nohighlight">
+\[{\bf U}_t + [{\bf F}({\bf U})]_x = {\bf S}\]</div>
+<p>The primitive variable equations would be:</p>
+<div class="math notranslate nohighlight">
+\[{\bf q}_t + {\bf A}({\bf q}) {\bf q}_x = {\bf H}\]</div>
+<p>where <span class="math notranslate nohighlight">\({\bf H}\)</span> are the sources for the primitive variables.</p>
+<p>The interface states with sources included in the tracing appear as:</p>
+<div class="math notranslate nohighlight">
+\[{\bf q}_{i+1/2,L}^{n+1/2} = \tilde{{\bf q}}_+ -
+   \sum_{\nu;\lambda^{(\nu)}\ge 0} {\bf l}_i^{(\nu)} \cdot \left (
+        \tilde{{\bf q}}_+ - \mathcal{I}_+^{(\nu)}({\bf q}_i) - 
+                            \frac{\Delta t}{2} \mathcal{I}_+^{(\nu)}({\bf H}_i) 
+       \right ) {\bf r}_i^{(\nu)}\]</div>
+<div class="math notranslate nohighlight">
+\[{\bf q}_{i-1/2,R}^{n+1/2} = \tilde{{\bf q}}_- -
+   \sum_{\nu;\lambda^{(\nu)}\le 0} {\bf l}_i^{(\nu)} \cdot \left (
+        \tilde{{\bf q}}_+ - \mathcal{I}_-^{(\nu)}({\bf q}_i) -
+                            \frac{\Delta t}{2} \mathcal{I}_-^{(\nu)}({\bf H}_i)         
+       \right ) {\bf r}_i^{(\nu)}\]</div>
+<p>For gravity, <span class="math notranslate nohighlight">\({\bf H}\)</span> is only non-zero for velocity, so only the velocity interface states will see
+this contribution.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We use a factor of 1/2 in front of the source term to time-center it–this is in contrast to the
+original PPM paper, and seems necessary to get 2nd order</p>
+</div>
+</section>
+<section id="the-hse-problem-setup">
+<h2>The <code class="docutils literal notranslate"><span class="pre">hse</span></code> problem setup<a class="headerlink" href="#the-hse-problem-setup" title="Link to this heading">#</a></h2>
+<p>Here we’ll look at the <code class="docutils literal notranslate"><span class="pre">hse</span></code> problem setup.  This initializes a 1D isothermal atmosphere
+in hydrostatic equilibrium with constant gravity.  If we start out with zero-velocity, then
+there should be no accelerations and the velocity should remain zero and the atmosphere static.
+This allows us to test how well our methods preserve HSE.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ppmpy.euler</span> <span class="kn">import</span> <span class="n">Euler</span>
+<span class="kn">from</span> <span class="nn">ppmpy.gravity</span> <span class="kn">import</span> <span class="n">constant_gravity</span>
+<span class="kn">from</span> <span class="nn">ppmpy.initial_conditions</span> <span class="kn">import</span> <span class="n">hse</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here are the parameters needed for the atmosphere initialization:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;base_density&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;base_pressure&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;g_const&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s look at the initial atmosphere</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nx</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">Euler</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">hse</span><span class="p">,</span>
+          <span class="n">grav_func</span><span class="o">=</span><span class="n">constant_gravity</span><span class="p">,</span>
+          <span class="n">bc_left_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">bc_right_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">plot_prim</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/29c38d5b3bcf8b4d1c6059dd2f8dec8038d2d9fd6a187e55da6de13e4abb121b.png" src="_images/29c38d5b3bcf8b4d1c6059dd2f8dec8038d2d9fd6a187e55da6de13e4abb121b.png" />
+</div>
+</div>
+<p>Notice that we are using reflecting boundaries at the top and bottom of the atmosphere.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>We want the reconstruction to guarantee that there is no flux through the boundaries when doing
+reflection.  This means that we need to do <em>odd</em>-reflection on gravity (just like with velocity)
+to ensure that the source term tracing at the lower boundary is balanced.</p>
+<p>We also explicitly enforce reflection on the interface states.  On the left:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+{\rho}_{{\tt lo}-1/2,L} &amp;= {\rho}_{{\tt lo}-1/2,R} \\
+{u}_{{\tt lo}-1/2,L} &amp;= -{u}_{{\tt lo}-1/2,R} \\
+{p}_{{\tt lo}-1/2,L} &amp;= {p}_{{\tt lo}-1/2,R}
+\end{align*}\]</div>
+<p>and on the right:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+{\rho}_{{\tt hi}+1/2,R} &amp;= {\rho}_{{\tt hi}+1/2,L} \\
+{u}_{{\tt hi}+1/2,R} &amp;= -{u}_{{\tt hi}+1/2,L} \\
+{p}_{{\tt hi}+1/2,R} &amp;= {p}_{{\tt hi}+1/2,L}
+\end{align*}\]</div>
+</div>
+</section>
+<section id="normal-ppm-reconstruction">
+<h2>Normal PPM reconstruction<a class="headerlink" href="#normal-ppm-reconstruction" title="Link to this heading">#</a></h2>
+<p>Here we use reflecting boundaries and the standard PPM reconstruction, with limiting.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nx</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">Euler</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">hse</span><span class="p">,</span>
+          <span class="n">grav_func</span><span class="o">=</span><span class="n">constant_gravity</span><span class="p">,</span>
+          <span class="n">bc_left_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">bc_right_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can look at the reflecting boundary conditions to see what they do to the atmosphere</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">cons_to_prim</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">q</span><span class="p">[:,</span> <span class="n">e</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">qp</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;x&#39;)
+</pre></div>
+</div>
+<img alt="_images/e12e967c0af986b6c1ad186e8cd0e7236d731cf8ab0dd6c38a0f060b372c44f1.png" src="_images/e12e967c0af986b6c1ad186e8cd0e7236d731cf8ab0dd6c38a0f060b372c44f1.png" />
+</div>
+</div>
+<p>Now we can visualize how PPM reconstructs pressure near the lower boundary</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gp</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">lo_index</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">hi_index</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">draw_prim</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">qp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/75fad8800a11789037fb19b17933aa78001de19bb7eed461ef7b40ad29015820.png" src="_images/75fad8800a11789037fb19b17933aa78001de19bb7eed461ef7b40ad29015820.png" />
+</div>
+</div>
+<p>Notice that the first interior zone has a flat profile, so there is no pressure gradient and that zone will not be in HSE
+when we use the pressure coming from the Riemann problem to balance the gravitational source term.</p>
+<p>Let’s evolve this for 0.5 s to see how well HSE is maintained</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nx</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">Euler</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">hse</span><span class="p">,</span>
+          <span class="n">grav_func</span><span class="o">=</span><span class="n">constant_gravity</span><span class="p">,</span>
+          <span class="n">bc_left_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">bc_right_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">plot_prim</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/5dba266fbc2870948996b76a71f1e3a1728a65a05919e72a5cb914b81b0d3f20.png" src="_images/5dba266fbc2870948996b76a71f1e3a1728a65a05919e72a5cb914b81b0d3f20.png" />
+</div>
+</div>
+</section>
+<section id="hydrostatic-pressure-reconstruction">
+<h2>Hydrostatic pressure reconstruction<a class="headerlink" href="#hydrostatic-pressure-reconstruction" title="Link to this heading">#</a></h2>
+<p>Now we explore the case where we have the PPM reconstruction understand HSE.  If we consider
+the initial cubic interpolation to find <span class="math notranslate nohighlight">\({\bf q}_{i\pm 1/2}\)</span> for zone <span class="math notranslate nohighlight">\(i\)</span>, we can write that as:</p>
+<div class="math notranslate nohighlight">
+\[{\bf q}_{i+1/2} = f({\bf q}_{i-1}, {\bf q}_{i}, {\bf q}_{i+1}, {\bf q}_{i+2})\]</div>
+<div class="math notranslate nohighlight">
+\[{\bf q}_{i-1/2} = f({\bf q}_{i-2}, {\bf q}_{i-1}, {\bf q}_{i}, {\bf q}_{i+1})\]</div>
+<p>For the pressure, we modify the <span class="math notranslate nohighlight">\({\bf p}\)</span> seen by the cubic by subtracting off HSE integrating from zone <span class="math notranslate nohighlight">\(i\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[p^\prime_i = 0\]</div>
+<div class="math notranslate nohighlight">
+\[p^\prime_{i\pm 1} = p_{i\pm 1} - \int_{x_i}^{x_{i\pm 1}} \rho g dx\]</div>
+<div class="math notranslate nohighlight">
+\[p^\prime_{i\pm 2} = p_{i\pm 2} - \int_{x_i}^{x_{i\pm 2}} \rho g dx\]</div>
+<p>where we treat <span class="math notranslate nohighlight">\(\rho\)</span> and <span class="math notranslate nohighlight">\(g\)</span> as piecewise constant within a zone when doing the integral.</p>
+<p>We then do the cubic interpolation on <span class="math notranslate nohighlight">\(p^\prime\)</span>.  We can then either add back the HSE pressure or leave it as a perturbation.</p>
+<p>First we’ll consider the case where we add back the HSE pressure.  We use these values of <span class="math notranslate nohighlight">\(p^\prime_{i\pm 1/2}\)</span>
+to define the parabola edges:</p>
+<div class="math notranslate nohighlight">
+\[p^\prime_- = p^\prime_{i-1/2}\]</div>
+<div class="math notranslate nohighlight">
+\[p^\prime_+ = p^\prime_{i+1/2}\]</div>
+<p>and then do the PPM limiting on them as needed.  We then add back the HSE pressure
+to the parabola edge values:</p>
+<div class="math notranslate nohighlight">
+\[p_- = p^\prime_- + p_i  - \frac{\Delta x}{2} \rho_i g_i\]</div>
+<div class="math notranslate nohighlight">
+\[p_+ = p^\prime_+ + p_i  + \frac{\Delta x}{2} \rho_i g_i\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>With this HSE reconstruction, the interface state <span class="math notranslate nohighlight">\({\bf q}_{i+1/2}\)</span> seen by zone <span class="math notranslate nohighlight">\(i\)</span> immediately after
+the cubic interpolation is no longer the same as that seen by zone <span class="math notranslate nohighlight">\(i+1\)</span>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This reconstruction is done by the <code class="docutils literal notranslate"><span class="pre">HSEPPMInterpolant</span></code> class, and used within <code class="docutils literal notranslate"><span class="pre">Euler</span></code> when <code class="docutils literal notranslate"><span class="pre">use_hse_construction=True</span></code> is set.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nx</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">Euler</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">hse</span><span class="p">,</span>
+          <span class="n">grav_func</span><span class="o">=</span><span class="n">constant_gravity</span><span class="p">,</span>
+          <span class="n">use_hse_reconstruction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+          <span class="n">bc_left_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">bc_right_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gp2</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">lo_index</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">hi_index</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">draw_prim</span><span class="p">(</span><span class="n">gp2</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">qp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/457ea8452230f042f3ac91f48984513f7f167f58e9d16f0cce392abe7f3696f2.png" src="_images/457ea8452230f042f3ac91f48984513f7f167f58e9d16f0cce392abe7f3696f2.png" />
+</div>
+</div>
+<p>In this case, we see that the pressure in the first interior zone has a gradient that matches the needed HSE pressure gradient.</p>
+<p>Now let’s evolve this to see how well HSE is maintained with this reconstruction</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nx</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">Euler</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">hse</span><span class="p">,</span>
+          <span class="n">grav_func</span><span class="o">=</span><span class="n">constant_gravity</span><span class="p">,</span>
+          <span class="n">use_hse_reconstruction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+          <span class="n">bc_left_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">bc_right_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">plot_prim</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/a5e2a0e61b2341a3e8e68fcd87a50bd0f6b931b374599dad18fc9e6df8326378.png" src="_images/a5e2a0e61b2341a3e8e68fcd87a50bd0f6b931b374599dad18fc9e6df8326378.png" />
+</div>
+</div>
+<p>It is much better–the velocity is 3 orders-of-magnitude smaller.  But we can actually do better
+if we don’t include the HSE pressure in the characteristic projection.</p>
+</section>
+<section id="addressing-characteristic-tracing">
+<h2>Addressing characteristic tracing<a class="headerlink" href="#addressing-characteristic-tracing" title="Link to this heading">#</a></h2>
+<p>The final variation is to keep the parabola in terms of <span class="math notranslate nohighlight">\(p^\prime\)</span> and do the characterstic tracing
+on that.  Then we need add back in the HSE interface pressure after the tracing.</p>
+<p>A few notes:</p>
+<ul class="simple">
+<li><p>We need to add back in the HSE pressure when computing the eigenvectors from the reference state.</p></li>
+<li><p>We do not include the gravitational source term in the characteristic tracing, since it is taken into account by tracing <span class="math notranslate nohighlight">\(p^\prime\)</span>.</p></li>
+<li><p>After adding up all of the jumps carried by the 3 waves, we need to add the HSE interface pressure back to the interfaces.</p></li>
+</ul>
+<p>This results in a <em>well-balanced</em> method.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is enabled by setting <code class="docutils literal notranslate"><span class="pre">hse_as_perturbation=True</span></code> together with <code class="docutils literal notranslate"><span class="pre">use_hse_reconstruction=True</span></code></p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nx</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">Euler</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">hse</span><span class="p">,</span>
+          <span class="n">grav_func</span><span class="o">=</span><span class="n">constant_gravity</span><span class="p">,</span>
+          <span class="n">use_hse_reconstruction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hse_as_perturbation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+          <span class="n">bc_left_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">bc_right_type</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="n">e</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">plot_prim</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/fd18df19fa16979958085ac1543013c202a58017e0ce407318d4b5fad5890c67.png" src="_images/fd18df19fa16979958085ac1543013c202a58017e0ce407318d4b5fad5890c67.png" />
+</div>
+</div>
+<p>Now we see that the velocity is zero to machine precision.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="convergence.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Convergence of the Euler Solver</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="hse.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">HSE Convergence</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-terms-in-ppm">Source terms in PPM</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hse-problem-setup">The <code class="docutils literal notranslate"><span class="pre">hse</span></code> problem setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normal-ppm-reconstruction">Normal PPM reconstruction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hydrostatic-pressure-reconstruction">Hydrostatic pressure reconstruction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#addressing-characteristic-tracing">Addressing characteristic tracing</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By <a href="https://zingale.github.io">Michael Zingale</a>
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <p>
+&copy; 2024; CC-BY-NC-SA 4.0
+<p>
+
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
