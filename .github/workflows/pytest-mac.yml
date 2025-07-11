@@ -1,4 +1,4 @@
-name: pytest-all
+name: pytest-mac
 
 on:
   # Trigger the workflow on push or pull request,
@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  test-mac:
+    runs-on: macos-latest
 
     strategy:
       matrix:
