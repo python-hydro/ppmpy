@@ -1,5 +1,5 @@
 import numpy as np
-from numpy.testing import assert_array_equal, assert_array_almost_equal_nulp
+from numpy.testing import assert_array_almost_equal_nulp, assert_array_equal
 
 from ppmpy.grid import FVGrid
 from ppmpy.reconstruction import PPMInterpolant

@@ -8,7 +8,8 @@ import numpy as np
 
 from ppmpy.eigen import eigen
 from ppmpy.grid import FVGrid
-from ppmpy.reconstruction import PPMInterpolant, HSEPPMInterpolant, flattening_coefficient
+from ppmpy.reconstruction import (HSEPPMInterpolant, PPMInterpolant,
+                                  flattening_coefficient)
 from ppmpy.riemann_exact import RiemannProblem, State
 
 

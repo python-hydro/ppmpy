@@ -1,6 +1,6 @@
 from pytest import approx
 
-from ppmpy import State, RiemannProblem
+from ppmpy import RiemannProblem, State
 
 
 class TestGrid:
