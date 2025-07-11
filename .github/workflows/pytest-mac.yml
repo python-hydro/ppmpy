@@ -1,4 +1,4 @@
-name: pytest-all
+name: pytest-mac
 
 on:
   # Trigger the workflow on push or pull request,
@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  test-mac:
+    runs-on: macos-latest
 
     strategy:
       matrix:
@@ -43,7 +43,7 @@ jobs:
           python -c "import sys, numpy; print(numpy.__version__); print(sys.version); print(numpy.show_runtime())"
           echo '::endgroup::'
           echo '::group::CPU info'
-          lscpu
+          sysctl -a | grep machdep.cpu
           echo '::endgroup::'
           echo '::group::Package versions'
           pip list --format=freeze
