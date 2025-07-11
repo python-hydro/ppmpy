@@ -24,7 +24,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/python-hydro/ppmpy"
-
+Documentation = "https://python-hydro.github.io/ppmpy"
 
 # packaging
 

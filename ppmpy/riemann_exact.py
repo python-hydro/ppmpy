@@ -14,8 +14,8 @@ is returned as a State object:
 `q_int = rp.sample_solution()`
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy import optimize
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 
-from ppmpy.grid import FVGrid
 from ppmpy.gravity import constant_gravity
+from ppmpy.grid import FVGrid
 
 
 class TestGravity:

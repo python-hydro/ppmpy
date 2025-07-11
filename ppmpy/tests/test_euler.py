@@ -2,7 +2,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal_nulp
 
 from ppmpy.euler import Euler, FluidVars
-from ppmpy.initial_conditions import sod, acoustic_pulse
+from ppmpy.initial_conditions import acoustic_pulse, sod
 
 
 class TestFluidVars:

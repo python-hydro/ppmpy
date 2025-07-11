@@ -10,8 +10,7 @@ __version__ = version
 
 
 from .eigen import eigen
+from .euler import Euler
 from .grid import FVGrid
 from .reconstruction import PPMInterpolant, flattening_coefficient
 from .riemann_exact import RiemannProblem, State
-
-from .euler import Euler
