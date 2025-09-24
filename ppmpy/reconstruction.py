@@ -233,6 +233,30 @@ class PPMInterpolant:
             a = self.am[n] + xi*(self.ap[n] - self.am[n] + self.a6[n] * (1.0-xi))
             gp.ax.plot(x, a/scale, color="C1", lw=2)
 
+    def draw_average(self, gp, *, scale=None):
+        """Draw the horizontal line that represents the cell-average
+        in each zone on the axes ax.
+
+        Parameters
+        ----------
+
+        gp : GridPlot
+            the grid plot object
+        scale : float, optional
+            normalization factor (default is maximum data value)
+        """
+
+        ilo = max(gp.lo_index, self.grid.lo-1)
+        ihi = min(gp.hi_index, self.grid.hi+1)
+
+        if scale is None:
+            scale = np.max(self.a[ilo:ihi+1])
+
+        for n in range(ilo, ihi+1):
+            gp.ax.hlines(y=self.a[n]/scale,
+                         xmin=self.grid.xl[n], xmax=self.grid.xr[n],
+                         linestyle='--', lw=1, color='k')
+
     def mark_cubic(self, gp, *, scale=None):
         """Mark the location of the initial interface states from the
         cubic interpolant on the axes ax.
@@ -244,7 +268,6 @@ class PPMInterpolant:
             the grid plot object
         scale : float, optional
             normalization factor (default is maximum data value)
-
         """
 
         ilo = max(gp.lo_index-1, self.grid.lo-2)
