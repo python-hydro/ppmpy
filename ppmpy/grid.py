@@ -54,7 +54,7 @@ class FVGrid:
     """
 
     def __init__(self, nx, ng, *,
-                 xmin=0.0, xmax=1.0):
+                 xmin=0.0, xmax=1.0, geometry="Cartesian"):
 
         self.xmin = xmin
         self.xmax = xmax
@@ -71,6 +71,30 @@ class FVGrid:
         self.xl = xmin + (np.arange(nx+2*ng)-ng)*self.dx
         self.xr = xmin + (np.arange(nx+2*ng)-ng+1.0)*self.dx
         self.x = xmin + (np.arange(nx+2*ng)-ng+0.5)*self.dx
+
+        self.geometry = geometry
+
+        # area is nodal, so area[i] is A_{i-1/2}
+        self.area = np.zeros(self.nq+1)
+
+        self.volume = np.zeros(self.nq)
+
+        if geometry in ["cartesian", "Cartesian"]:
+            self.area[:] = 1.0
+            self.volume[:] = 1.0
+
+        elif geometry == "spherical":
+            self.area[0:self.nq-2] = 4.0 * np.pi * self.xl[:]**2
+            self.area[self.nq-1] = 4.0 * np.pi * self.xr[-1]**2
+
+            # volume is 4/3 pi (r_r**3 - r_l**3).  We factor it to reduce roundoff
+            self.volume[:] = 4.0 * np.pi / 3.0 * (self.xl[:]**2 +
+                                                  2.0 * self.xl[:] * self.xr[:]
+                                                  + self.xr[:]**2) * self.dx
+
+        else:
+            raise ValueError("invalid geometry")
+
 
     def scratch_array(self, nc=1):
         """ return a scratch array dimensioned for our grid
